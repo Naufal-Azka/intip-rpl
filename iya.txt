@@ -1,0 +1,13 @@
+tblaporan
+
+id_laporan PK
+id_jadwal FK
+tanggal_laporan 
+deskripsi
+foto
+ker1
+ker2
+ker3
+ker4 
+ker5 pc1
+ker6 pc1
