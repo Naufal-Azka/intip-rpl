@@ -2,7 +2,11 @@
 import { useState, useEffect } from 'react';
 import { fetchJadwalHome } from '@/lib/fetchJadwalHome';
 import { Hari } from '@prisma/client';
-import LoadingSkeleton from '@/components/loadingSkeleton';
+import { useAuth } from '@/lib/AuthContext';
+import LoadingSkeleton from '@/components/LoadingSkeleton';
+import NavigationBar from '@/components/NavigationBar';
+import AnnoucementButton from '@/components/AnnouncemntButton';
+import Annoucement from '@/components/Annoucement';
 
 type Lab = string;
 type Kelas = string;
@@ -86,33 +90,14 @@ export default function Home() {
         }));
     };
 
+    const { user, logout } = useAuth();
+
     return (
         <div>
+            <NavigationBar/>
             {/* ANNOUNCEMENT */}
             {/* WILL GONE AFTER 3 DAY OR WHEN ADMIN CREATE A NEW ANNOUNCEMENT  */}
-            <section className='bg-[#D9D9D9] grid grid-cols-1 pb-4 pt-8'>
-                <div className='flex flex-row place-items-center gap-2 mx-[10%] my-[1%]'>
-                    <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='32'
-                        height='32'
-                        viewBox='0 0 24 24'
-                        style={{ fill: 'rgba(0, 0, 0, 1)' }}>
-                        <path d='M19 13.586V10c0-3.217-2.185-5.927-5.145-6.742C13.562 2.52 12.846 2 12 2s-1.562.52-1.855 1.258C7.185 4.074 5 6.783 5 10v3.586l-1.707 1.707A.996.996 0 0 0 3 16v2a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L19 13.586zM19 17H5v-.586l1.707-1.707A.996.996 0 0 0 7 14v-4c0-2.757 2.243-5 5-5s5 2.243 5 5v4c0 .266.105.52.293.707L19 16.414V17zm-7 5a2.98 2.98 0 0 0 2.818-2H9.182A2.98 2.98 0 0 0 12 22z'></path>
-                    </svg>
-                    <p className='font-semibold text-2xl'>Annoucement</p>
-                </div>
-                <div className='bg-white py-4 pl-4  m-4 rounded-lg'>
-                    <div className='flex flex-row place-items-center gap-4'>
-                        <div className='rounded-full bg-gray-200 w-7 h-7'></div>
-                        <p className='font-semibold'>Naufal Azka Putra Difa</p>
-                    </div>
-                    <p className='text-sm mx-[10%] my-2 text-justify'>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit perspiciatis totam harum ea
-                        officiis incidunt hic atque neque corrupti voluptas.
-                    </p>
-                </div>
-            </section>
+            <Annoucement/>
             {/* CHANGE THE LAB USAGE DEPENDING ON CURRENT DATE */}
             <section className='mx-[12%] mt-8 mb-4'>
                 <p className='font-semibold'>
@@ -149,8 +134,14 @@ export default function Home() {
                             const upcomingSchedule = schedules.find(
                                 (s) => getJadwalStatus(s.waktuMulai, s.waktuSelesai) === 'upcoming'
                             );
-                            const firstSchedule = currentSchedule || upcomingSchedule;
+                            const finishedSchedules = schedules.filter(
+                                (s) => getJadwalStatus(s.waktuMulai, s.waktuSelesai) === 'finished'
+                            );
+                            const lastFinishedSchedule = finishedSchedules[finishedSchedules.length - 1];
 
+                            // If there are no current or upcoming schedules, use the last finished schedule
+                            const firstSchedule = currentSchedule || upcomingSchedule || lastFinishedSchedule;
+                            
                             return (
                                 <div key={lab}>
                                     <div
@@ -286,6 +277,9 @@ export default function Home() {
                         })
                 )}
             </section>
+            {user && user.role === 'ADMIN' && (
+                <AnnoucementButton/>
+            )}
         </div>
     );
 }
