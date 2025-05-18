@@ -24,7 +24,6 @@ interface FormData {
     };
 }
 
-// Add after the existing interfaces
 interface ColorPickerPosition {
     x: number;
     y: number;
@@ -40,7 +39,6 @@ const DAMAGE_TYPES = {
     NO_PC: '#787878',
 };
 
-// Add these utility functions
 const formatDate = (date: Date) => {
     return date.toLocaleDateString('id-ID', {
         weekday: 'long',
@@ -67,14 +65,12 @@ export default function LaporanCreate() {
         foto_ruangan: null,
         foto_kerusakan: null,
         damages: [],
-        id_jadwal: 0, // This should come from URL or props
+        id_jadwal: 0, 
         tanggal_laporan: new Date(),
     });
 
-    // Add to the existing state declarations
     const [colorPicker, setColorPicker] = useState<ColorPickerPosition | null>(null);
 
-    // Add after the state declarations
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (colorPicker && !(event.target as Element).closest('.color-picker')) {
@@ -86,10 +82,8 @@ export default function LaporanCreate() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [colorPicker]);
 
-    // Add this effect after your existing useEffect
     useEffect(() => {
         const fetchJadwal = async () => {
-            // Get id_jadwal from URL params
             const searchParams = new URLSearchParams(window.location.search);
             const id_jadwal = searchParams.get('id_jadwal');
 
@@ -118,9 +112,7 @@ export default function LaporanCreate() {
         fetchJadwal();
     }, []);
 
-    // Add this useEffect after your existing useEffects
     useEffect(() => {
-        // Update date when component mounts and every minute
         const updateDate = () => {
             const userDate = new Date();
             // Set to current date at midnight
@@ -133,13 +125,12 @@ export default function LaporanCreate() {
             }));
         };
 
-        updateDate(); // Initial update
+        updateDate(); 
         const interval = setInterval(updateDate, 60000); // Update every minute
 
         return () => clearInterval(interval);
     }, []);
 
-    // Generate seat IDs
     const generateSeatIds = () => {
         const rows = ['a', 'b', 'c', 'd'];
         const seats: string[] = [];
@@ -202,7 +193,6 @@ export default function LaporanCreate() {
 
     const handleSubmit = async () => {
         try {
-            // Validate required fields
             if (!formData.deskripsi_kerusakan.trim()) {
                 alert('Mohon isi detail kerusakan');
                 return;
@@ -216,7 +206,6 @@ export default function LaporanCreate() {
                 return;
             }
 
-            // Show loading state
             const submitButton = document.querySelector('button[type="submit"]');
             if (submitButton) {
                 submitButton.setAttribute('disabled', 'true');
@@ -253,7 +242,6 @@ export default function LaporanCreate() {
             console.error('Error submitting laporan:', error);
             alert(error instanceof Error ? error.message : 'Gagal mengirim laporan. Silakan coba lagi.');
         } finally {
-            // Reset button state
             const submitButton = document.querySelector('button[type="submit"]');
             if (submitButton) {
                 submitButton.removeAttribute('disabled');

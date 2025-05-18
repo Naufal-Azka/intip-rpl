@@ -1,11 +1,7 @@
-import { Hari } from '@prisma/client';
-
 export function convertDBTimeToWIB(date: Date): string {
     const hours = date.getUTCHours();
     const minutes = date.getUTCMinutes();
-    const wibHours = hours >= 18 
-        ? (hours - 18 + 7) % 24 
-        : (hours + 7) % 24;
+    const wibHours = (hours + 7) % 24;
     
     return `${wibHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }

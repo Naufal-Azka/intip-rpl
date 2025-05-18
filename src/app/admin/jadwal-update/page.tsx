@@ -13,13 +13,11 @@ interface Schedule {
     waktuSelesai: string;
 }
 
-// Add this interface above the Schedule interface
 interface ScheduleWithChanges extends Schedule {
     isWaktuMulaiChanged?: boolean;
     isWaktuSelesaiChanged?: boolean;
 }
 
-// Add this helper function before the JadwalUpdate component
 const formatTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
     return date
@@ -28,7 +26,7 @@ const formatTime = (dateTimeString: string) => {
             minute: '2-digit',
             hour12: false,
         })
-        .slice(0, 5); // Only keep HH:mm format
+        .slice(0, 5);
 };
 
 export default function JadwalUpdate() {
@@ -41,7 +39,6 @@ export default function JadwalUpdate() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
-    // Time options for dropdowns
     const timeOptions = [
         '06:00',
         '07:00',
@@ -64,7 +61,6 @@ export default function JadwalUpdate() {
         '15:30',
     ];
 
-    // Fetch schedules when selected day/lab changes
     useEffect(() => {
         const fetchSchedules = async () => {
             setIsLoading(true);
@@ -76,16 +72,13 @@ export default function JadwalUpdate() {
                 }
                 const data = await response.json();
 
-                // Initialize empty schedule object
                 const emptySchedules: Record<Lab, ScheduleWithChanges[]> = {
                     RPL_1: [],
                     RPL_2: [],
                     RPL_3: [],
                 };
 
-                // Group schedules by lab
                 const groupedSchedules = data.reduce((acc: Record<Lab, Schedule[]>, schedule: Schedule) => {
-                    // Only include labs that match the filter or if 'Semua' is selected
                     if (selectedLab === 'Semua' || schedule.lab === selectedLab) {
                         if (!acc[schedule.lab]) {
                             acc[schedule.lab] = [];
@@ -111,7 +104,6 @@ export default function JadwalUpdate() {
         fetchSchedules();
     }, [selectedDay, selectedLab]);
 
-    // Handle schedule updates
     const handleScheduleUpdate = async (labId: Lab, scheduleId: number, field: keyof Schedule, value: string) => {
         setSchedules((prev) => ({
             ...prev,
@@ -128,7 +120,6 @@ export default function JadwalUpdate() {
         }));
     };
 
-    // Handle save changes
     const handleSaveChanges = async () => {
         try {
             const allSchedules = Object.values(schedules)

@@ -4,7 +4,6 @@ import Image from 'next/image';
 
 const prisma = new PrismaClient();
 
-// Add this function at the top of the file
 async function getLaporanByDateRange(range: 'today' | 'yesterday' | '7days' | '30days') {
     const now = new Date();
     const startDate = new Date();
@@ -42,7 +41,6 @@ async function getLaporanByDateRange(range: 'today' | 'yesterday' | '7days' | '3
     });
 }
 
-// Define the type for damage colors
 type DamageColorKey = 'kerusakan_1' | 'kerusakan_2' | 'kerusakan_3' | 'kerusakan_4' | 'kerusakan_5';
 
 const DAMAGE_COLORS: Record<DamageColorKey, string> = {
@@ -54,17 +52,15 @@ const DAMAGE_COLORS: Record<DamageColorKey, string> = {
 };
 
 export default async function laporanRead() {
-    // Fetch laporan with jadwal data
     const laporanData = await prisma.laporan.findMany({
         include: {
-            jadwal: true, // Include the related jadwal data
+            jadwal: true,
         },
         orderBy: {
-            id: 'desc', // Show newest first
+            id: 'desc',
         },
     });
 
-    // Group laporan by lab
     const groupedLaporan = laporanData.reduce((acc, laporan) => {
         const lab = laporan.jadwal.lab;
         if (!acc[lab]) {
@@ -118,19 +114,23 @@ export default async function laporanRead() {
                     laporanList.map((laporan) => (
                         <div key={laporan.id}>
                             <div
-                                className={`px-[10%] flex flex-row place-items-center justify-between py-2.5 
-                ${
-                    lab === 'RPL_1'
-                        ? 'bg-[#9FDFFF] text-[#005B88]'
-                        : lab === 'RPL_2'
-                        ? 'bg-[#FADA7A] text-[#715501]'
-                        : 'bg-[#F5F0CD] text-[#837300]'
-                }`}>
+                                className={`px-[10%] flex flex-row place-items-center justify-between py-2.5 ${
+                                    lab === 'RPL_1'
+                                        ? 'bg-[#9FDFFF] text-[#005B88]'
+                                        : lab === 'RPL_2'
+                                        ? 'bg-[#FADA7A] text-[#715501]'
+                                        : 'bg-[#F5F0CD] text-[#837300]'
+                                }`}>
                                 <div className='flex flex-row place-items-center gap-2'>
                                     <p className='font-semibold text-xl'>Lab {lab.split('_')[1]}</p>
                                     <p
-                                        className={`p-1 rounded
-                    ${lab === 'RPL_1' ? 'bg-[#76d1ff]' : lab === 'RPL_2' ? 'bg-[#EDBE33]' : 'bg-[#E7DC94]'}`}>
+                                        className={`p-1 rounded ${
+                                            lab === 'RPL_1'
+                                                ? 'bg-[#76d1ff]'
+                                                : lab === 'RPL_2'
+                                                ? 'bg-[#EDBE33]'
+                                                : 'bg-[#E7DC94]'
+                                        }`}>
                                         {new Date(laporan.jadwal.waktuMulai).toLocaleTimeString('id-ID', {
                                             hour: '2-digit',
                                             minute: '2-digit',

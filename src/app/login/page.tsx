@@ -9,13 +9,13 @@ import Link from 'next/link';
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const { login } = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
+        setError(null);
 
         try {
             const res = await fetch('/api/auth/login', {
@@ -27,14 +27,18 @@ export default function Login() {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error || 'Login failed');
+                if (res.status === 401) {
+                    throw new Error('Username atau password salah');
+                }
+                throw new Error(data.error || 'Login gagal');
             }
 
-            // Call login with the token
             login(data.token);
             router.push('/');
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Login failed');
+            setError(err instanceof Error ? err.message : 'Login gagal');
+            // Clear password field on error
+            setPassword('');
         }
     };
 
@@ -52,7 +56,7 @@ export default function Login() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder='Masukkan Username...'
-                    className='border-2 border-gray-500 p-2 rounded'
+                    className={`border-2 p-2 rounded transition-colors ${error ? 'border-red-500' : 'border-gray-500'}`}
                     required
                 />
                 <label className='font-bold mt-4'>
@@ -64,10 +68,13 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder='Masukkan Password...'
-                    className='border-2 border-gray-500 p-2 rounded'
+                    className={`border-2 p-2 rounded transition-colors ${error ? 'border-red-500' : 'border-gray-500'}`}
                     required
                 />
-                <button type='submit' className='text-white bg-sky-600 mt-4 p-2 rounded'>
+                {error && <p className='text-red-500 text-sm mt-1'>{error}</p>}
+                <button
+                    type='submit'
+                    className='text-white bg-sky-600 hover:bg-sky-700 mt-4 p-2 rounded transition-colors'>
                     Login
                 </button>
             </form>
