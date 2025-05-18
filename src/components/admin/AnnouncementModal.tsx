@@ -1,5 +1,5 @@
 'use client';
-import Modal from '@/components/Modal';
+import Modal from '@/components/shared/Modal';
 import { useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import JadwalList from '@/components/JadwalList';
+import JadwalList from '@/components/schedule/JadwalList';
 import Link from 'next/link';
 
 const prisma = new PrismaClient();

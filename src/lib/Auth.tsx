@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { Role } from '@prisma/client';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'a4e4bd9d7cf5f7ad460c6479152980b11742bfeadd9f53148a85cf533c53e2a0';
 const TOKEN_EXPIRATION = '1h';
@@ -8,6 +7,7 @@ export interface UserJWTPayload {
     id: number;
     username: string;
     role: string;
+    association_kelas: string;
     exp?: number;
 }
 

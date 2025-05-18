@@ -2,6 +2,20 @@
 
 import { useState } from 'react';
 
+function convertToWIB(time: Date) {
+    const utcHours = time.getUTCHours();
+    const wibHours = (utcHours + 7) % 24; // Convert UTC to WIB (UTC+7)
+    
+    return new Date(Date.UTC(
+        time.getUTCFullYear(),
+        time.getUTCMonth(),
+        time.getUTCDate(),
+        wibHours,
+        time.getUTCMinutes(),
+        time.getUTCSeconds()
+    ));
+}
+
 type JadwalProps = {
     id: number;
     hari: string; // Day of the week
@@ -21,11 +35,15 @@ export default function JadwalList({ initialJadwal }: JadwalListProps) {
     const [kelas, setKelas] = useState('semua');
 
     const filteredJadwal = initialJadwal.filter((schedule) => {
-        const hariMatch = schedule.hari === hari; // Matches selected day
-        const labMatch = lab === 'semua' || schedule.lab === lab; // Matches all labs or selected lab
-        const kelasMatch = kelas === 'semua' || schedule.kelas === kelas; // Matches all classes or selected class
+        const hariMatch = schedule.hari === hari;
+        const labMatch = lab === 'semua' || schedule.lab === lab;
+        const kelasMatch = kelas === 'semua' || schedule.kelas === kelas;
         return hariMatch && labMatch && kelasMatch;
-    });
+    }).map(schedule => ({
+        ...schedule,
+        waktuMulai: convertToWIB(new Date(schedule.waktuMulai)),
+        waktuSelesai: convertToWIB(new Date(schedule.waktuSelesai))
+    }));
 
     const jadwalByLab = filteredJadwal.reduce((acc, curr) => {
         if (!acc[curr.lab]) {
@@ -36,12 +54,15 @@ export default function JadwalList({ initialJadwal }: JadwalListProps) {
     }, {} as Record<string, typeof filteredJadwal>);
 
     const formatTime = (date: Date) => {
-        return new Date(date).toLocaleTimeString('id-ID', {
+        const wibTime = convertToWIB(new Date(date));
+        return wibTime.toLocaleTimeString('id-ID', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false,
+            timeZone: 'Asia/Jakarta',
         });
     };
+
     return (
         <div>
             {/* SORT */}

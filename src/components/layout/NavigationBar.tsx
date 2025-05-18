@@ -98,20 +98,20 @@ export default function NavigationBar() {
                                 Jadwal
                             </Link>
                             <Link
-                                href='/laporan'
+                                href='/admin/laporan'
                                 className='block w-full p-2 border-b-2 border-b-gray-300 text-center hover:bg-gray-100 transition-colors'>
                                 Laporan
                             </Link>
                             <Link
-                                href='/edit-jadwal'
+                                href='/admin/jadwal-update'
                                 className='block w-full p-2 border-b-2 border-b-gray-300 text-center hover:bg-gray-100 transition-colors'>
                                 Edit Jadwal
                             </Link>
-                            <Link
+                            {/* <Link
                                 href='/settings'
                                 className='block w-full p-2 border-b-2 border-b-gray-300 text-center hover:bg-gray-100 transition-colors'>
                                 Settings
-                            </Link>
+                            </Link> */}
                         </>
                     )}
 

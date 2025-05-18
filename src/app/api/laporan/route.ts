@@ -11,14 +11,14 @@ const DAMAGE_TYPES = {
     '#ffa500': 'ACCESSORIES',
     '#ffd700': 'MISSING',
     '#007bff': 'ETHERNET',
-    '#787878': 'NO_PC'
+    '#787878': 'NO_PC',
 };
 
 function groupDamagesByType(damages: any[]) {
     const grouped: { [key: string]: string[] } = {};
-    
+
     // Sort damages by type
-    damages.forEach(damage => {
+    damages.forEach((damage) => {
         const damageType = DAMAGE_TYPES[damage.damageType as keyof typeof DAMAGE_TYPES];
         if (damageType) {
             if (!grouped[damageType]) {
@@ -30,7 +30,7 @@ function groupDamagesByType(damages: any[]) {
 
     // Return only the seat IDs for each damage type
     return Object.values(grouped)
-        .map(seats => seats.join(', '))
+        .map((seats) => seats.join(', '))
         .slice(0, 5); // Take only first 5 damage groups
 }
 
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         }
 
         const formData = await request.formData();
-        
+
         // Validate required fields
         const id_jadwal = parseInt(formData.get('id_jadwal') as string);
         if (!id_jadwal) {
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
         const damages = JSON.parse(formData.get('damages') as string);
         const groupedDamages = groupDamagesByType(damages);
         const tanggal_laporan = new Date(formData.get('tanggal_laporan') as string);
-        
+
         // Handle file uploads
         const foto_ruangan = formData.get('foto_ruangan') as File;
         if (!foto_ruangan) {
@@ -68,12 +68,18 @@ export async function POST(request: Request) {
         }
 
         const foto_kerusakan = formData.get('foto_kerusakan') as File;
-        
+
         // Save files
         const foto_ruangan_path = await saveFile(foto_ruangan, 'ruangan');
         const foto_kerusakan_path = foto_kerusakan ? await saveFile(foto_kerusakan, 'kerusakan') : '';
-        
-        // Create laporan
+
+        // Get primary and related jadwal IDs
+        const related_ids = (formData.get('related_ids') as string)
+            .split(',')
+            .map((id) => parseInt(id))
+            .filter((id) => id !== id_jadwal); // Remove primary ID from related IDs
+
+        // Create the main laporan
         const laporan = await prisma.laporan.create({
             data: {
                 id_jadwal,
@@ -85,27 +91,40 @@ export async function POST(request: Request) {
                 kerusakan_3: groupedDamages[2] || '',
                 kerusakan_4: groupedDamages[3] || '',
                 kerusakan_5: groupedDamages[4] || '',
-                tanggal_laporan
-            }
+                tanggal_laporan,
+            },
         });
+
+        // Create references for related jadwal
+        if (related_ids.length > 0) {
+            await prisma.laporanJadwalReference.createMany({
+                data: related_ids.map((related_id) => ({
+                    id_laporan: laporan.id,
+                    id_jadwal: related_id,
+                })),
+            });
+        }
 
         return NextResponse.json({ success: true, data: laporan });
     } catch (error) {
         console.error('Error creating laporan:', error);
-        return NextResponse.json({ 
-            success: false, 
-            error: error instanceof Error ? error.message : 'Failed to create laporan' 
-        }, { status: 500 });
+        return NextResponse.json(
+            {
+                success: false,
+                error: error instanceof Error ? error.message : 'Failed to create laporan',
+            },
+            { status: 500 }
+        );
     }
 }
 
 async function saveFile(file: File, prefix: string): Promise<string> {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    
+
     const filename = `${prefix}-${Date.now()}${path.extname(file.name)}`;
     const filepath = path.join(process.cwd(), 'public', 'uploads', filename);
-    
+
     await writeFile(filepath, buffer);
     return `/uploads/${filename}`;
 }

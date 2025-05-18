@@ -21,6 +21,7 @@ export async function POST(request: Request) {
             id: user.id,
             username: user.username,
             role: user.role,
+            association_kelas: user.association_kelas
         });
 
         return NextResponse.json({ token });

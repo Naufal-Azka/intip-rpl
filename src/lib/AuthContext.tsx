@@ -3,10 +3,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User } from '@/types/user';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
     user: User | null;
-    login: (token: string) => void; // Changed to accept token instead of User
+    login: (token: string) => void;
     logout: () => void;
 }
 
@@ -17,8 +18,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        // Check for token on mount
-        const token = localStorage.getItem('token');
+        // Check for token in cookies instead of localStorage
+        const token = Cookies.get('token');
         if (token) {
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
@@ -26,22 +27,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     id: payload.id,
                     username: payload.username,
                     role: payload.role,
+                    association_kelas: payload.association_kelas,
                 });
             } catch (error) {
                 console.error('Invalid token:', error);
-                localStorage.removeItem('token');
+                Cookies.remove('token');
             }
         }
     }, []);
 
     const login = (token: string) => {
-        localStorage.setItem('token', token);
+        // Store token in cookies instead of localStorage
+        Cookies.set('token', token, {
+            expires: 7, // expires in 7 days
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+        });
+
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             setUser({
                 id: payload.id,
                 username: payload.username,
                 role: payload.role,
+                association_kelas: payload.association_kelas,
             });
         } catch (error) {
             console.error('Invalid token:', error);
@@ -49,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        Cookies.remove('token');
         setUser(null);
         router.push('/');
     };
