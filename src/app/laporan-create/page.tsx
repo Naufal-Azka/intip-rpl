@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface SeatDamage {
@@ -56,7 +57,28 @@ const formatTime = (timeString: string) => {
     });
 };
 
+const validateAccessToken = (token: string, scheduleId: string) => {
+    try {
+        const decoded = Buffer.from(token, 'base64').toString();
+        const [tokenScheduleId, timestamp] = decoded.split('-');
+        
+        // Check if the token matches the schedule ID
+        if (tokenScheduleId !== scheduleId) return false;
+        
+        // Check if token is not older than 5 seconds
+        const tokenTime = parseInt(timestamp);
+        const now = Date.now();
+        const fiveSecondsInMs = 60000;
+        
+        return now - tokenTime <= fiveSecondsInMs;
+    } catch {
+        return false;
+    }
+};
+
 export default function LaporanCreate() {
+    const router = useRouter();
+    const [isValidAccess, setIsValidAccess] = useState(false);
     const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
     const [selectedDamageType, setSelectedDamageType] = useState<string>(DAMAGE_TYPES.NONE);
     const [currentDamageType, setCurrentDamageType] = useState<string>(DAMAGE_TYPES.NONE);
@@ -70,6 +92,20 @@ export default function LaporanCreate() {
     });
 
     const [colorPicker, setColorPicker] = useState<ColorPickerPosition | null>(null);
+
+    useEffect(() => {
+        // Validate access on component mount
+        const searchParams = new URLSearchParams(window.location.search);
+        const id_jadwal = searchParams.get('id_jadwal');
+        const access_token = searchParams.get('access_token');
+
+        if (!id_jadwal || !access_token || !validateAccessToken(access_token, id_jadwal)) {
+            router.replace('/'); // Redirect to home if invalid access
+            return;
+        }
+
+        setIsValidAccess(true);
+    }, [router]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -218,6 +254,11 @@ export default function LaporanCreate() {
             formDataToSend.append('damages', JSON.stringify(formData.damages));
             formDataToSend.append('tanggal_laporan', formData.tanggal_laporan.toISOString());
 
+            // Add related_ids from URL parameters or empty string if not present
+            const searchParams = new URLSearchParams(window.location.search);
+            const related_ids = searchParams.get('related_ids') || '';
+            formDataToSend.append('related_ids', related_ids);
+
             if (formData.foto_ruangan) {
                 formDataToSend.append('foto_ruangan', formData.foto_ruangan);
             }
@@ -249,6 +290,11 @@ export default function LaporanCreate() {
             }
         }
     };
+
+    // Don't render anything until access is validated
+    if (!isValidAccess) {
+        return null;
+    }
 
     return (
         <div>

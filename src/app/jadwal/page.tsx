@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { convertDBTimeToWIB, timeToMinutes } from '@/utils/timeUtils';
 
 interface JadwalType {
     id: number;
@@ -14,7 +13,6 @@ interface JadwalType {
 }
 
 const formatTime = (date: Date) => {
-    // Create a new date that's 7 hours ahead for WIB
     const wibDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
     return wibDate.toLocaleTimeString('id-ID', {
         hour: '2-digit',
@@ -42,9 +40,7 @@ export default function Jadwal() {
 
                 const data = await response.json();
 
-                // Transform the data with proper UTC dates
                 const formattedData = data.map((item: JadwalType) => {
-                    // Parse the ISO string and create UTC date
                     const waktuMulai = new Date(item.waktuMulai);
                     const waktuSelesai = new Date(item.waktuSelesai);
                     console.log('Original time:', waktuMulai);
@@ -57,18 +53,15 @@ export default function Jadwal() {
                     };
                 });
 
-                // Sort by WIB time using the timeToMinutes helper
                 const sortedData = formattedData.sort((a: JadwalType, b: JadwalType) => {
                     const aHours = a.waktuMulai.getUTCHours();
                     const aMinutes = a.waktuMulai.getUTCMinutes();
                     const bHours = b.waktuMulai.getUTCHours();
                     const bMinutes = b.waktuMulai.getUTCMinutes();
 
-                    // Convert to WIB (UTC+7)
                     const aWibHours = (aHours + 7) % 24;
                     const bWibHours = (bHours + 7) % 24;
 
-                    // Compare total minutes
                     const aTime = aWibHours * 60 + aMinutes;
                     const bTime = bWibHours * 60 + bMinutes;
                     return aTime - bTime;
@@ -85,14 +78,12 @@ export default function Jadwal() {
         fetchJadwal();
     }, [hari]);
 
-    // Filter jadwal based on selected lab and kelas
     const filteredJadwal = jadwal.filter((item) => {
         const labMatch = lab === 'semua' || item.lab === lab;
         const kelasMatch = kelas === 'semua' || item.kelas === kelas;
         return labMatch && kelasMatch;
     });
 
-    // Group jadwal by lab
     const jadwalByLab = filteredJadwal.reduce((acc, curr) => {
         if (!acc[curr.lab]) {
             acc[curr.lab] = [];
@@ -101,20 +92,16 @@ export default function Jadwal() {
         return acc;
     }, {} as Record<string, JadwalType[]>);
 
-    // Sort schedules within each lab
     Object.keys(jadwalByLab).forEach((lab) => {
         jadwalByLab[lab].sort((a, b) => {
-            // Get hours and minutes in UTC
             const aHours = a.waktuMulai.getUTCHours();
             const aMinutes = a.waktuMulai.getUTCMinutes();
             const bHours = b.waktuMulai.getUTCHours();
             const bMinutes = b.waktuMulai.getUTCMinutes();
 
-            // Convert to WIB (UTC+7)
             const aWibHours = (aHours + 7) % 24;
             const bWibHours = (bHours + 7) % 24;
 
-            // Compare total minutes
             const aTime = aWibHours * 60 + aMinutes;
             const bTime = bWibHours * 60 + bMinutes;
             return aTime - bTime;
@@ -139,7 +126,6 @@ export default function Jadwal() {
                 </Link>
             </nav>
 
-            {/* SORT */}
             <section className='mt-[5%] mx-[5%] grid grid-cols-2 gap-[11px] bg-[#EBEBEB] max-h-[168px] border-1 rounded-[10px] place-items-center justify-self-center py-2.5 px-5'>
                 <div className='max-w-[150px]'>
                     <p className='text-[16px] font-medium mb-2.5 text-black'>Hari</p>
@@ -185,7 +171,6 @@ export default function Jadwal() {
                     </select>
                 </div>
             </section>
-            {/* SHOW */}
             <section className='mb-[10%] mt-[5%] mx-[5%] grid grid-cols-1 gap-[2%] text-black'>
                 {isLoading ? (
                     <div className='text-center py-4'>

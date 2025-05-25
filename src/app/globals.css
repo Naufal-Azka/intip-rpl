@@ -5,6 +5,22 @@
     --foreground: #171717;
 }
 
+:root[data-theme='default'] {
+    --color-primary: #ffffff;
+    --color-secondary: #000000;
+    --color-accent: #d9d9d9;
+    --color-highlight: #86c96c;
+    --color-background: #bad1b2;
+}
+
+:root[data-theme='lavender'] {
+    --color-primary: #5d4e60;
+    --color-secondary: #826c7f;
+    --color-accent: #a88fac;
+    --color-highlight: #d4b2d8;
+    --color-background: #efcefa;
+}
+
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -42,5 +58,41 @@ body {
         direction: rtl;
         text-align: right;
         width: 91%;
+    }
+}
+
+@layer utilities {
+    .theme-transition {
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .bg-primary {
+        background-color: var(--color-primary);
+    }
+    .bg-secondary {
+        background-color: var(--color-secondary);
+    }
+    .bg-accent {
+        background-color: var(--color-accent);
+    }
+    .bg-highlight {
+        background-color: var(--color-highlight);
+    }
+    .bg-background {
+        background-color: var(--color-background);
+    }
+    .text-primary {
+        color: var(--color-primary);
+    }
+    .text-secondary {
+        color: var(--color-secondary);
+    }
+    .text-accent {
+        color: var(--color-accent);
+    }
+    .text-highlight {
+        color: var(--color-highlight);
+    }
+    .text-background {
+        color: var(--color-background);
     }
 }

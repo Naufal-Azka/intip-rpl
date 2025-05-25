@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Be_Vietnam_Pro } from 'next/font/google';
-import { AuthProvider } from '@/lib/AuthContext';
+import RootLayoutWrapper from '@/components/layout/RootLayoutWrapper';
 import './globals.css';
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -14,16 +14,6 @@ export const metadata: Metadata = {
     description: 'An inventory and lab monitoring application',
 };
 
-export default function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
-    return (
-        <html lang='en'>
-            <body className={`${beVietnamPro.variable} antialiased`}>
-                <AuthProvider>{children}</AuthProvider>
-            </body>
-        </html>
-    );
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return <RootLayoutWrapper beVietnamProVariable={beVietnamPro.variable}>{children}</RootLayoutWrapper>;
 }

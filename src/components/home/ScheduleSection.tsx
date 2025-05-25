@@ -4,19 +4,20 @@ import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
 import ScheduleItem from '@/components/schedule/ScheduleItem';
 import { Hari } from '@prisma/client';
 
+// Add new interface for laporan check
+interface JadwalWithLaporan {
+    id: number;
+    hari: Hari;
+    lab: string;
+    kelas: string;
+    waktuMulai: Date;
+    waktuSelesai: Date;
+    hasLaporan?: boolean;
+}
+
 interface ScheduleSectionProps {
     isLoading: boolean;
-    jadwalByLab: Record<
-        string,
-        Array<{
-            id: number;
-            hari: Hari;
-            lab: string;
-            kelas: string;
-            waktuMulai: Date;
-            waktuSelesai: Date;
-        }>
-    >;
+    jadwalByLab: Record<string, JadwalWithLaporan[]>;
     expandedLabs: Record<string, boolean>;
     setExpandedLabs: Dispatch<SetStateAction<Record<string, boolean>>>;
     isWeekend: boolean;
@@ -74,6 +75,8 @@ export default function ScheduleSection({
                                         firstSchedule.waktuSelesai,
                                         isWeekend
                                     )}
+                                    hasLaporan={firstSchedule.hasLaporan}
+                                    isExpanded={false}
                                 />
                             )}
                             {expandedLabs[lab] &&
@@ -82,8 +85,10 @@ export default function ScheduleSection({
                                         key={schedule.id}
                                         {...schedule}
                                         status={getJadwalStatus(schedule.waktuMulai, schedule.waktuSelesai, isWeekend)}
+                                        hasLaporan={schedule.hasLaporan}
+                                        isExpanded={true}
                                     />
-                                ))}
+                                ))}{' '}
                         </div>
                     );
                 })}

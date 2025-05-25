@@ -73,11 +73,16 @@ export async function POST(request: Request) {
         const foto_ruangan_path = await saveFile(foto_ruangan, 'ruangan');
         const foto_kerusakan_path = foto_kerusakan ? await saveFile(foto_kerusakan, 'kerusakan') : '';
 
-        // Get primary and related jadwal IDs
-        const related_ids = (formData.get('related_ids') as string)
-            .split(',')
-            .map((id) => parseInt(id))
-            .filter((id) => id !== id_jadwal); // Remove primary ID from related IDs
+        // Get primary and related jadwal IDs with null check
+        const related_ids_str = formData.get('related_ids');
+        const related_ids = related_ids_str
+            ? related_ids_str
+                  .toString()
+                  .split(',')
+                  .filter((id) => id && id.trim())
+                  .map((id) => parseInt(id))
+                  .filter((id) => !isNaN(id) && id !== id_jadwal)
+            : [];
 
         // Create the main laporan
         const laporan = await prisma.laporan.create({

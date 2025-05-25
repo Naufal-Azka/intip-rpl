@@ -35,18 +35,38 @@ export async function fetchJadwalHome(effectiveDay: string) {
             Jumat: Hari.Jumat,
         };
 
+        // Get current date at midnight
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         const jadwal = await prisma.jadwal.findMany({
             where: {
                 hari: dayToHari[effectiveDay],
-            }
+            },
+            include: {
+                laporan: {
+                    where: {
+                        tanggal_laporan: today,
+                    },
+                    select: {
+                        id: true,
+                        related_jadwal: {
+                            select: {
+                                id_jadwal: true,
+                            },
+                        },
+                    },
+                },
+            },
         });
 
-        // Convert and sort by WIB time
+        // Convert and sort by WIB time, include laporan status
         return jadwal
             .map((schedule) => ({
                 ...schedule,
                 waktuMulai: convertToWIB(schedule.waktuMulai),
                 waktuSelesai: convertToWIB(schedule.waktuSelesai),
+                hasLaporan: schedule.laporan.length > 0,
             }))
             .sort((a, b) => timeToMinutes(a.waktuMulai) - timeToMinutes(b.waktuMulai));
     } catch (error) {

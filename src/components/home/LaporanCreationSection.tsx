@@ -11,11 +11,12 @@ interface LaporanCreationProps {
     jadwal: {
         id: number;
         hari: Hari;
-        lab: Lab;
+        lab: Lab; 
         kelas: Kelas;
         waktuMulai: Date;
         waktuSelesai: Date;
         relatedJadwalIds?: number[];
+        hasLaporan?: boolean; // Add this field
     }[];
     getJadwalStatus: (waktuMulai: Date, waktuSelesai: Date) => 'current' | 'upcoming' | 'finished';
 }
@@ -30,6 +31,13 @@ function formatWIBTime(date: Date) {
     });
 }
 
+// Add this helper function at the top
+const generateAccessToken = (scheduleId: number) => {
+    const timestamp = Date.now();
+    // Create a simple token combining schedule id and timestamp
+    return Buffer.from(`${scheduleId}-${timestamp}`).toString('base64');
+};
+
 const getMergedJadwalForLaporan = (
     jadwalList: {
         id: number;
@@ -39,6 +47,7 @@ const getMergedJadwalForLaporan = (
         waktuMulai: Date;
         waktuSelesai: Date;
         relatedJadwalIds?: number[];
+        hasLaporan?: boolean;
     }[]
 ) => {
     const grouped = jadwalList.reduce((acc, curr) => {
@@ -47,17 +56,30 @@ const getMergedJadwalForLaporan = (
             acc[key] = {
                 ...curr,
                 relatedJadwalIds: [curr.id],
+                hasLaporan: curr.hasLaporan,
             };
         } else {
             if (new Date(curr.waktuSelesai) > new Date(acc[key].waktuSelesai)) {
                 acc[key].waktuSelesai = curr.waktuSelesai;
             }
             acc[key].relatedJadwalIds.push(curr.id);
+            // If any related schedule has a laporan, mark the group as having a laporan
+            if (curr.hasLaporan) {
+                acc[key].hasLaporan = true;
+            }
         }
         return acc;
     }, {} as Record<string, any>);
 
     return Object.values(grouped);
+};
+
+const isWithinGracePeriod = (waktuSelesai: Date) => {
+    const now = new Date();
+    const endTime = new Date(waktuSelesai);
+    const oneHourInMs = 60 * 60 * 1000; // 1 hour in milliseconds
+
+    return now.getTime() - endTime.getTime() <= oneHourInMs;
 };
 
 export default function LaporanCreationSection({ user, jadwal, getJadwalStatus }: LaporanCreationProps) {
@@ -67,26 +89,31 @@ export default function LaporanCreationSection({ user, jadwal, getJadwalStatus }
         <section className='mx-[10%] my-6 grid grid-cols-3 gap-[5%]'>
             {getMergedJadwalForLaporan(jadwal).map((schedule) => {
                 const status = getJadwalStatus(schedule.waktuMulai, schedule.waktuSelesai);
-                const canCreateReport = user.association_kelas === schedule.kelas && status === 'current';
-
-                console.log('Debug - Schedule:', {
-                    // Add debug logging
-                    kelas: schedule.kelas,
-                    status,
-                    canCreate: canCreateReport,
-                    time: {
-                        start: new Date(schedule.waktuMulai).toLocaleTimeString(),
-                        end: new Date(schedule.waktuSelesai).toLocaleTimeString(),
-                    },
-                });
+                const canCreateReport =
+                    user.association_kelas === schedule.kelas &&
+                    (status === 'current' || (status === 'finished' && isWithinGracePeriod(schedule.waktuSelesai))) &&
+                    !schedule.hasLaporan; // Add this condition
+                    
+                // DEBUGGING ONLY CONSOLE LOG
+                // console.log('Debug - Schedule:', {
+                //     kelas: schedule.kelas,
+                //     status,
+                //     canCreate: canCreateReport,
+                //     isInGracePeriod: status === 'finished' && isWithinGracePeriod(schedule.waktuSelesai),
+                //     time: {
+                //         start: new Date(schedule.waktuMulai).toLocaleTimeString(),
+                //         end: new Date(schedule.waktuSelesai).toLocaleTimeString(),
+                //     },
+                // });
 
                 if (canCreateReport) {
+                    const accessToken = generateAccessToken(schedule.id);
                     return (
                         <Link
                             key={schedule.id}
                             href={`/laporan-create?id_jadwal=${
                                 schedule.id
-                            }&related_ids=${schedule.relatedJadwalIds.join(',')}`}
+                            }&related_ids=${schedule.relatedJadwalIds.join(',')}&access_token=${accessToken}`}
                             className='grid grid-cols-1 place-items-center rounded-lg py-4 bg-[#86C96C] text-white shadow-[0_5px_15px_rgba(0,0,0,0.35)] hover:bg-[#75b85d] transition-colors'>
                             <svg
                                 xmlns='http://www.w3.org/2000/svg'
