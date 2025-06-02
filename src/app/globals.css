@@ -30,7 +30,7 @@
     /*  */
     --schedulesection-text: #000000;
     --schedulesection-fill: #000000;
-    --schedulesection-bg: #f8f8f8;
+    --schedulesection-bg: #e4e4e4;
     /*  */
     --scheduleupcoming-text: #515151;
     --scheduleupcoming-bg: #a3a3a3;
@@ -45,7 +45,7 @@
     /*  */
     --schedule-bg: #ebebeb;
     --schedule-text: #666666;
-    --schedule-item-bg: #ebebeb;
+    --schedule-item-bg: #D9D9D9;
     --schedule-item-border: #b6b6b6;
     --schedule-border: #000000;
     /*  */
@@ -154,6 +154,10 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
 @layer components {
     .teacher {
         height: 36px;
@@ -240,7 +244,7 @@ body {
     .schedulesection-fill {
         fill: var(--schedulesection-fill);
     }
-    .schedulesction-bg {
+    .schedulesection-bg {
         background-color: var(--schedulesection-bg);
     }
     /* ScheduleCurrent */

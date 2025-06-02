@@ -100,7 +100,7 @@ function LabHeader({ lab, isExpanded, onToggle }: { lab: string; isExpanded: boo
     return (
         <div
             onClick={onToggle}
-            className='schedulesction-bg flex flex-row px-7 py-3 rounded-t-3xl place-items-center justify-between cursor-pointer'>
+            className='schedulesection-bg flex flex-row px-7 py-3 rounded-t-3xl place-items-center justify-between cursor-pointer'>
             <p className='schedulesection-text font-semibold text-2xl'>Lab. {lab.replace('_', ' ')}</p>
             <svg
                 xmlns='http://www.w3.org/2000/svg'

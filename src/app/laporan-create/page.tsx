@@ -152,16 +152,16 @@ export default function LaporanCreate() {
         return () => clearInterval(interval);
     }, []);
 
-    const generateSeatIds = () => {
-        const rows = ['a', 'b', 'c', 'd'];
-        const seats: string[] = [];
-        rows.forEach((row) => {
-            for (let i = 1; i <= 9; i++) {
-                seats.push(`${row}${i}`);
-            }
-        });
-        return seats;
-    };
+    // const generateSeatIds = () => {
+    //     const rows = ['a', 'b', 'c', 'd'];
+    //     const seats: string[] = [];
+    //     rows.forEach((row) => {
+    //         for (let i = 1; i <= 9; i++) {
+    //             seats.push(`${row}${i}`);
+    //         }
+    //     });
+    //     return seats;
+    // };
 
     const handleSeatClick = (seatId: string, event: React.MouseEvent) => {
         const currentColor = formData.damages.find((d) => d.id === seatId)?.damageType || DAMAGE_TYPES.NONE;
@@ -302,12 +302,12 @@ export default function LaporanCreate() {
                     <div className='flex flex-col gap-1'>
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                             <div
-                                key={`a${num}`}
-                                onClick={(e) => handleSeatClick(`a${num}`, e)}
+                                key={`A${num}`}
+                                onClick={(e) => handleSeatClick(`A${num}`, e)}
                                 className='w-11 h-11 rounded cursor-pointer flex items-center justify-center text-white'
                                 style={{
                                     backgroundColor:
-                                        formData.damages.find((d) => d.id === `a${num}`)?.damageType ||
+                                        formData.damages.find((d) => d.id === `A${num}`)?.damageType ||
                                         DAMAGE_TYPES.NONE,
                                 }}></div>
                         ))}
@@ -315,7 +315,7 @@ export default function LaporanCreate() {
 
                     {/* Center columns */}
                     <div className='grid grid-cols-2 gap-x-1'>
-                        {['b', 'c'].map((row) => (
+                        {['B', 'C'].map((row) => (
                             <div key={row} className='flex flex-col gap-1'>
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                                     <div
@@ -336,12 +336,12 @@ export default function LaporanCreate() {
                     <div className='flex flex-col gap-1'>
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                             <div
-                                key={`d${num}`}
-                                onClick={(e) => handleSeatClick(`d${num}`, e)}
+                                key={`D${num}`}
+                                onClick={(e) => handleSeatClick(`D${num}`, e)}
                                 className='w-11 h-11 rounded cursor-pointer flex items-center justify-center text-white'
                                 style={{
                                     backgroundColor:
-                                        formData.damages.find((d) => d.id === `d${num}`)?.damageType ||
+                                        formData.damages.find((d) => d.id === `D${num}`)?.damageType ||
                                         DAMAGE_TYPES.NONE,
                                 }}></div>
                         ))}
@@ -354,9 +354,9 @@ export default function LaporanCreate() {
                     className='w-25 h-12 mt-[10%] rounded cursor-pointer place-self-end flex items-center justify-center text-white'
                     style={{
                         backgroundColor:
-                            formData.damages.find((d) => d.id === 'teacher')?.damageType || DAMAGE_TYPES.NONE,
+                            formData.damages.find((d) => d.id === 'Guru')?.damageType || DAMAGE_TYPES.NONE,
                     }}>
-                    <span className='font-semibold'>Teacher</span>
+                    <span className='font-semibold'>Guru</span>
                 </div>
             </section>
 

@@ -13,6 +13,15 @@ interface Schedule {
     waktuSelesai: string;
 }
 
+interface TempSchedule {
+    id: number;
+    hari: Hari;
+    lab: Lab;
+    kelas: Kelas;
+    waktuMulai: Date;
+    waktuSelesai: Date;
+}
+
 interface ScheduleWithChanges extends Schedule {
     isWaktuMulaiChanged?: boolean;
     isWaktuSelesaiChanged?: boolean;
@@ -20,14 +29,22 @@ interface ScheduleWithChanges extends Schedule {
 
 const formatTime = (date: Date) => {
     const wibDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
-    return wibDate.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-    });
+    return wibDate
+        .toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+        .replace('.', ':');
+};
+const convertToDisplayTime = (date: Date) => {
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const wibHours = (hours + 7) % 24;
+    return `${wibHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
 
-const convertToUTC = (timeStr: string) => {
+const convertToUTCTime = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
     const utcHours = (hours - 7 + 24) % 24;
     return `${utcHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
@@ -48,58 +65,6 @@ export default function JadwalUpdate() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
-    const timeOptions = [
-        '07:00',
-        '07:10',
-        '07:20',
-        '07:30',
-        '07:40',
-        '07:50',
-        '08:00',
-        '08:10',
-        '08:20',
-        '08:30',
-        '08:40',
-        '08:50',
-        '09:00',
-        '09:10',
-        '09:20',
-        '09:30',
-        '09:40',
-        '09:50',
-        '10:00',
-        '10:10',
-        '10:20',
-        '10:30',
-        '10:40',
-        '10:50',
-        '11:00',
-        '11:10',
-        '11:20',
-        '11:30',
-        '11:40',
-        '11:50',
-        '12:00',
-        '12:30',
-        '12:40',
-        '12:50',
-        '13:00',
-        '13:10',
-        '13:20',
-        '13:30',
-        '13:40',
-        '13:50',
-        '14:00',
-        '14:10',
-        '14:20',
-        '14:30',
-        '14:40',
-        '14:50',
-        '15:00',
-        '15:10',
-        '15:20',
-        '15:30',
-    ];
     useEffect(() => {
         const fetchSchedules = async () => {
             setIsLoading(true);
@@ -110,37 +75,38 @@ export default function JadwalUpdate() {
                     throw new Error(errorData.error || 'Failed to fetch schedules');
                 }
                 const data = await response.json();
+                console.log('Raw data from server:', data);
 
                 // First convert all times to Date objects and sort them
-                const formattedData = data.map((item: Schedule) => ({
-                    ...item,
-                    waktuMulai: new Date(item.waktuMulai),
-                    waktuSelesai: new Date(item.waktuSelesai),
-                }));
-
-                interface TempSchedule {
-                    id: number;
-                    hari: Hari;
-                    lab: Lab;
-                    kelas: Kelas;
-                    waktuMulai: Date;
-                    waktuSelesai: Date;
-                }
-
-                const sortedData = formattedData.sort((a: TempSchedule, b: TempSchedule) => {
-                    const aHours = a.waktuMulai.getUTCHours();
-                    const aMinutes = a.waktuMulai.getUTCMinutes();
-                    const bHours = b.waktuMulai.getUTCHours();
-                    const bMinutes = b.waktuMulai.getUTCMinutes();
-
-                    const aWibHours = (aHours + 7) % 24;
-                    const bWibHours = (bHours + 7) % 24;
-
-                    const aTime = aWibHours * 60 + aMinutes;
-                    const bTime = bWibHours * 60 + bMinutes;
-                    return aTime - bTime;
+                const formattedData = data.map((item: Schedule) => {
+                    const formattedItem = {
+                        ...item,
+                        waktuMulai: new Date(item.waktuMulai),
+                        waktuSelesai: new Date(item.waktuSelesai),
+                    };
+                    console.log('Formatted item:', {
+                        id: formattedItem.id,
+                        originalStart: item.waktuMulai,
+                        originalEnd: item.waktuSelesai,
+                        formattedStart: formattedItem.waktuMulai,
+                        formattedEnd: formattedItem.waktuSelesai,
+                    });
+                    return formattedItem;
                 });
 
+                const sortedData = formattedData.sort((a: TempSchedule, b: TempSchedule) => {
+                    const comparison =
+                        timeToMinutes(convertToDisplayTime(a.waktuMulai)) -
+                        timeToMinutes(convertToDisplayTime(b.waktuMulai));
+                    console.log('Sorting comparison:', {
+                        aId: a.id,
+                        bId: b.id,
+                        aTime: convertToDisplayTime(a.waktuMulai),
+                        bTime: convertToDisplayTime(b.waktuMulai),
+                        result: comparison,
+                    });
+                    return comparison;
+                });
                 const emptySchedules: Record<Lab, ScheduleWithChanges[]> = {
                     RPL_1: [],
                     RPL_2: [],
@@ -179,15 +145,20 @@ export default function JadwalUpdate() {
         fetchSchedules();
     }, [selectedDay, selectedLab]);
 
+    const sanitizeTimeFormat = (timeStr: string) => {
+        return timeStr.replace('.', ':');
+    };
+
     const handleScheduleUpdate = async (labId: Lab, scheduleId: number, field: keyof Schedule, value: string) => {
+        const sanitizedValue = sanitizeTimeFormat(value);
         setSchedules((prev) => {
             const labSchedules = prev[labId];
             const currentSchedule = labSchedules.find((s) => s.id === scheduleId);
 
             if (!currentSchedule) return prev;
 
-            const proposedStart = field === 'waktuMulai' ? value : currentSchedule.waktuMulai;
-            const proposedEnd = field === 'waktuSelesai' ? value : currentSchedule.waktuSelesai;
+            const proposedStart = field === 'waktuMulai' ? sanitizedValue : currentSchedule.waktuMulai;
+            const proposedEnd = field === 'waktuSelesai' ? sanitizedValue : currentSchedule.waktuSelesai;
 
             const proposedStartMinutes = timeToMinutes(proposedStart);
             const proposedEndMinutes = timeToMinutes(proposedEnd);
@@ -236,8 +207,8 @@ export default function JadwalUpdate() {
                     lab: schedule.lab,
                     kelas: schedule.kelas,
                     // Convert WIB to UTC only when submitting
-                    waktuMulai: convertToUTC(schedule.waktuMulai),
-                    waktuSelesai: convertToUTC(schedule.waktuSelesai),
+                    waktuMulai: convertToUTCTime(schedule.waktuMulai),
+                    waktuSelesai: convertToUTCTime(schedule.waktuSelesai),
                     isWaktuMulaiChanged: schedule.isWaktuMulaiChanged,
                     isWaktuSelesaiChanged: schedule.isWaktuSelesaiChanged,
                 }));
@@ -332,7 +303,8 @@ export default function JadwalUpdate() {
                                     {labSchedules.map((schedule) => (
                                         <div key={schedule.id} className='mt-2 mb-2'>
                                             <div className='flex items-center gap-1 mb-2'>
-                                                <select
+                                                <input
+                                                    type='time'
                                                     value={schedule.waktuMulai}
                                                     onChange={(e) =>
                                                         handleScheduleUpdate(
@@ -342,18 +314,11 @@ export default function JadwalUpdate() {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'>
-                                                    <option value={schedule.waktuMulai}>{schedule.waktuMulai}</option>
-                                                    {timeOptions
-                                                        .filter((time) => time !== schedule.waktuMulai)
-                                                        .map((time) => (
-                                                            <option key={time} value={time}>
-                                                                {time}
-                                                            </option>
-                                                        ))}
-                                                </select>
+                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'
+                                                />
                                                 <span className='text-lg font-bold'>-</span>
-                                                <select
+                                                <input
+                                                    type='time'
                                                     value={schedule.waktuSelesai}
                                                     onChange={(e) =>
                                                         handleScheduleUpdate(
@@ -363,18 +328,8 @@ export default function JadwalUpdate() {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'>
-                                                    <option value={schedule.waktuSelesai}>
-                                                        {schedule.waktuSelesai}
-                                                    </option>
-                                                    {timeOptions
-                                                        .filter((time) => time !== schedule.waktuSelesai)
-                                                        .map((time) => (
-                                                            <option key={time} value={time}>
-                                                                {time}
-                                                            </option>
-                                                        ))}
-                                                </select>
+                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'
+                                                />
                                                 <select
                                                     value={schedule.kelas}
                                                     onChange={(e) =>
