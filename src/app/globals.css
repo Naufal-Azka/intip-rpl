@@ -6,19 +6,133 @@
 }
 
 :root[data-theme='default'] {
-    --color-primary: #ffffff;
-    --color-secondary: #000000;
-    --color-accent: #d9d9d9;
-    --color-highlight: #86c96c;
-    --color-background: #bad1b2;
+    --home-bg: #ffffff;
+    /*  */
+    --fill-primary: #000000;
+    /*  */
+    --border-primary: #d1d5db;
+    /*  */
+    --settings-switch-bg: #919191;
+    /*  */
+    --announcement-fill: #000000;
+    --announcement-bg: #d9d9d9;
+    --announcement-btn: #8fa9ff;
+    --announcement-textarea-bg: #e3e3e3;
+    --announcement-textarea-text: #000000;
+    /*  */
+    --login-bg: #22c55e;
+    /*  */
+    --laporancreation-text: #ffffff;
+    --laporancreation-fill: #ffffff;
+    --laporancreation-bg: #86c96c;
+    /*  */
+    --todayhome-text: #000000;
+    /*  */
+    --schedulesection-text: #000000;
+    --schedulesection-fill: #000000;
+    --schedulesection-bg: #f8f8f8;
+    /*  */
+    --scheduleupcoming-text: #515151;
+    --scheduleupcoming-bg: #a3a3a3;
+    /*  */
+    --schedulecurrent-text: #ffffff;
+    --schedulecurrent-fill: #ffffff;
+    --schedulecurrent-bg: #69af4e;
+    /*  */
+    --schedulecompleted-text: #78946d;
+    --schedulecompleted-fill: #78946d;
+    --schedulecompleted-bg: #bad1b2;
+    /*  */
+    --schedule-bg: #ebebeb;
+    --schedule-text: #666666;
+    --schedule-item-bg: #ebebeb;
+    --schedule-item-border: #b6b6b6;
+    --schedule-border: #000000;
+    /*  */
+    --lab1-bg: #c9edff;
+    --lab1-day: #9fdfff;
+    --lab1-text: #005b88;
+    --lab1-border: #005b88;
+    --lab1-header: #b1f0f7;
+    /*  */
+    --lab2-bg: #ffe597;
+    --lab2-day: #edbe33;
+    --lab2-text: #715501;
+    --lab2-border: #005b88;
+    --lab2-header: #fada7a;
+    /*  */
+    --lab3-bg: #ffddf1;
+    --lab3-day: #e4bad2;
+    --lab3-text: #837300;
+    --lab3-border: #005b88;
+    --lab3-header: #f5cde4;
+    /*  */
+    --input-text: #4a5565;
 }
 
 :root[data-theme='lavender'] {
-    --color-primary: #5d4e60;
-    --color-secondary: #826c7f;
-    --color-accent: #a88fac;
-    --color-highlight: #d4b2d8;
-    --color-background: #efcefa;
+    --home-bg: #5d4e60;
+    /*  */
+    --fill-primary: #d4b2d8;
+    /*  */
+    --border-primary: #d4b2d8;
+    /*  */
+    --settings-switch-bg: #d4b2d8;
+    /*  */
+    --announcement-fill: #d4b2d8;
+    --announcement-bg: #826c7f;
+    --announcement-btn: #d4b2d8;
+    --announcement-textarea-bg: #a88fac;
+    --announcement-textarea-text: #5d4e60;
+    /*  */
+    --login-bg: #d4b2d8;
+    /*  */
+    --laporancreation-text: #5d4e60;
+    --laporancreation-fill: #5d4e60;
+    --laporancreation-bg: #d4b2d8;
+    /*  */
+    --todayhome-text: #d4b2d8;
+    /*  */
+    --schedulesection-text: #efcefa;
+    --schedulesection-fill: #efcefa;
+    --schedulesection-bg: #826c7f;
+    /*  */
+    --scheduleupcoming-text: #efcefa;
+    --scheduleupcoming-bg: #a88fac;
+    /*  */
+    --schedulecurrent-text: #5d4e60;
+    --schedulecurrent-fill: #5d4e60;
+    --schedulecurrent-bg: #d4b2d8;
+    /*  */
+    --schedulecompleted-text: #5d4e60;
+    --schedulecompleted-fill: #5d4e60;
+    --schedulecompleted-bg: #a88fac;
+    /*  */
+    --schedule-bg: #826c7f;
+    --schedule-text: #efcefa;
+    --schedule-item-bg: #a88fac;
+    --schedule-item-border: #826c7f;
+    --schedule-border: #5d4e60;
+    /*  */
+    --lab1-bg: #948192;
+    --lab1-day: #5d4e60;
+    --lab1-text: #efcefa;
+    --lab1-border: #5d4e60;
+    --lab1-header: #826c7f;
+    /*  */
+    --lab2-bg: #ffe597;
+    --lab2-day: #6D4172;
+    --lab2-text: #005B88;
+    --lab2-border: #5d4e60;
+    --lab2-header: #BB98C0;
+    /*  */
+    --lab3-bg: #E8CDEB;
+    --lab3-day: #e4bad2;
+    --lab3-text: #6D4172;
+    --lab3-border: #5d4e60;
+    --lab3-header: #f5cde4;
+    /*  */
+    --input-text: #d4b2d8;
 }
 
 @theme inline {
@@ -43,8 +157,9 @@ body {
 @layer components {
     .teacher {
         height: 36px;
-        background: #f0f0f0;
-        border: 1px solid black;
+        background: var(--schedule-item-bg);
+        border: var(--border-primary) solid 1px;
+        color: var(--schedule-text);
         border-radius: 5px;
         padding-inline: 5px;
         padding-left: 28px;
@@ -65,34 +180,166 @@ body {
     .theme-transition {
         transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .bg-primary {
-        background-color: var(--color-primary);
+    /* Home */
+    .home-bg {
+        background-color: var(--home-bg);
     }
-    .bg-secondary {
-        background-color: var(--color-secondary);
+    /* Settings */
+    .settings-switch-bg {
+        background-color: var(--settings-switch-bg);
     }
-    .bg-accent {
-        background-color: var(--color-accent);
+    /* SVG Icon */
+    .fill-primary {
+        fill: var(--fill-primary);
     }
-    .bg-highlight {
-        background-color: var(--color-highlight);
+    /* Announcement */
+    .announcement-fill {
+        fill: var(--announcement-fill);
     }
-    .bg-background {
-        background-color: var(--color-background);
+    .announcement-bg {
+        background-color: var(--announcement-bg);
     }
-    .text-primary {
-        color: var(--color-primary);
+    .announcement-btn {
+        background-color: var(--announcement-btn);
     }
-    .text-secondary {
-        color: var(--color-secondary);
+    .announcement-textarea-bg {
+        background-color: var(--announcement-textarea-bg);
     }
-    .text-accent {
-        color: var(--color-accent);
+    .announcement-textarea-text {
+        color: var(--announcement-textarea-text);
     }
-    .text-highlight {
-        color: var(--color-highlight);
+    /* Border */
+    .border-primary {
+        border-bottom-color: var(--border-primary);
     }
-    .text-background {
-        color: var(--color-background);
+    .border-full {
+        border-color: var(--border-primary);
+    }
+    /* Username Navbar */
+    .username-navbar-text {
+        color: var(--fill-primary);
+    }
+    /* LaporanCreation */
+    .laporancreation-text {
+        color: var(--laporancreation-text);
+    }
+    .laporancreation-fill {
+        fill: var(--laporancreation-fill);
+    }
+    .laporancreation-bg {
+        background-color: var(--laporancreation-bg);
+    }
+    /* TodayHome */
+    .todayhome-text {
+        color: var(--todayhome-text);
+    }
+    /* ScheduleSection */
+    .schedulesection-text {
+        color: var(--schedulesection-text);
+    }
+    .schedulesection-fill {
+        fill: var(--schedulesection-fill);
+    }
+    .schedulesction-bg {
+        background-color: var(--schedulesection-bg);
+    }
+    /* ScheduleCurrent */
+    .schedulecurrent-text {
+        color: var(--schedulecurrent-text);
+    }
+    .schedulecurrent-fill {
+        fill: var(--schedulecurrent-fill);
+    }
+    .schedulecurrent-bg {
+        background-color: var(--schedulecurrent-bg);
+    }
+    /* ScheduleUpcoming */
+    .scheduleupcoming-text {
+        color: var(--scheduleupcoming-text);
+    }
+    .scheduleupcoming-bg {
+        background-color: var(--scheduleupcoming-bg);
+    }
+    /* ScheduleCompleted */
+    .schedulecompleted-text {
+        color: var(--schedulecompleted-text);
+    }
+    .schedulecompleted-fill {
+        fill: var(--schedulecompleted-fill);
+    }
+    .schedulecompleted-bg {
+        background-color: var(--schedulecompleted-bg);
+    }
+    /* Schedule */
+    .schedule-bg {
+        background-color: var(--schedule-bg);
+    }
+    .schedule-text {
+        color: var(--schedule-text);
+    }
+    .schedule-item-bg {
+        background-color: var(--schedule-item-bg);
+    }
+    .schedule-item-border {
+        border-color: var(--schedule-item-border);
+    }
+    .schedule-border {
+        border-color: var(--schedule-border);
+    }
+    /* Login */
+    .login-bg {
+        background-color: var(--login-bg);
+    }
+    /* Lab 1 Laporan */
+    .lab1-bg {
+        background-color: var(--lab1-bg);
+    }
+    .lab1-day {
+        background-color: var(--lab1-day);
+    }
+    .lab1-text {
+        color: var(--lab1-text);
+    }
+    .lab1-border {
+        border-color: var(--lab1-border);
+    }
+    .lab1-header {
+        background-color: var(--lab1-header);
+    }
+    /* Lab 2 Laporan */
+    .lab2-bg {
+        background-color: var(--lab2-bg);
+    }
+    .lab2-day {
+        background-color: var(--lab2-day);
+    }
+    .lab2-text {
+        color: var(--lab2-text);
+    }
+    .lab2-border {
+        border-color: var(--lab2-border);
+    }
+    .lab2-header {
+        background-color: var(--lab2-header);
+    }
+    /* Lab 3 Laporan */
+    .lab3-bg {
+        background-color: var(--lab3-bg);
+    }
+    .lab3-day {
+        background-color: var(--lab3-day);
+    }
+    .lab3-text {
+        color: var(--lab3-text);
+    }
+    .lab3-border {
+        border-color: var(--lab3-border);
+    }
+    .lab3-header {
+        background-color: var(--lab3-header);
+    }
+    /* Input */
+    .input-text {
+        color: var(--input-text);
     }
 }

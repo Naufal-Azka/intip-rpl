@@ -1,0 +1,33 @@
+/* Style the time input */
+input[type="time"] {
+    /* Remove the default styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Add custom styling */
+    background-color: var(--schedule-item-bg);
+    color: var(--schedule-text);
+    border: 1px solid var(--border-primary);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 14px;
+    
+    /* Style the time picker icon */
+    &::-webkit-calendar-picker-indicator {
+        filter: invert(0.5);
+        cursor: pointer;
+    }
+    
+    /* Style the time input when focused */
+    &:focus {
+        outline: none;
+        border-color: var(--border-primary);
+    }
+}
+
+/* For Firefox */
+input[type="time"]::-moz-calendar-picker-indicator {
+    filter: invert(0.5);
+    cursor: pointer;
+}

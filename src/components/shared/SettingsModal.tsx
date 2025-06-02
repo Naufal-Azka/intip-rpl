@@ -1,25 +1,37 @@
 import { useTheme } from '@/lib/ThemeContext';
+import { useAuth } from '@/lib/AuthContext';
+import Image from 'next/image';
 
-export default function SettingsModal() {
+interface SettingsModalProps {
+    onClose: () => void;
+}
+
+export default function SettingsModal({ onClose }: SettingsModalProps) {
     const { theme, toggleTheme } = useTheme();
+    const { user, logout } = useAuth();
+
+    const handleBackdropClick = (e: React.MouseEvent<HTMLElement>) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
+    const getThemeBasedIcon = () => {
+        return theme === 'default' ? (
+            <Image src='/profilicon-default.svg' alt='Intip RPL Icon' width={40} height={40} />
+        ) : (
+            <Image src='/profilicon-lavender.svg' alt='Intip RPL Icon' width={40} height={40} />
+        );
+    };
 
     return (
-        <section className='h-dvh w-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center'>
-            <div className='bg-primary grid grid-cols-1 px-6 py-6 gap-4 w-[85%] rounded-lg'>
+        <section
+            className='fixed inset-0 h-dvh w-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-50'
+            onClick={handleBackdropClick}>
+            <div className='home-bg grid grid-cols-1 px-6 py-6 gap-4 w-[85%] rounded-lg'>
                 <div className='text-lg font-bold flex flex-row gap-2'>
-                    <img src='/profilincon.svg' alt='' width='45' height='45' />
-                    <p className='self-center'>Kimi No Jawa</p>
-                </div>
-                <div className='text-[#919191] font-semibold flex flex-row gap-3'>
-                    <svg
-                        width='27'
-                        height='27'
-                        viewBox='0 0 23 23'
-                        style={{ fill: '#919191', stroke: '#919191' }}
-                        xmlns='http://www.w3.org/2000/svg'>
-                        <path d='M15.4062 1.0625C16.3451 1.06228 17.2733 1.26448 18.127 1.65527C18.9804 2.04604 19.7393 2.61648 20.3525 3.32715C20.9658 4.03795 21.4191 4.87277 21.6807 5.77441C21.9421 6.67595 22.0059 7.62322 21.8682 8.55176C21.7305 9.48028 21.3947 10.3684 20.8828 11.1553C20.3708 11.9422 19.6946 12.6101 18.9014 13.1123C18.1083 13.6144 17.2162 13.9392 16.2861 14.0654C15.3558 14.1917 14.4091 14.1164 13.5107 13.8438L13.2236 13.7568L5.04297 21.9375H1.0625V17.957L9.24316 9.77637L9.15625 9.48926C8.89699 8.63533 8.81647 7.73853 8.91699 6.85449L8.9707 6.47656C9.14495 5.47169 9.55262 4.52132 10.1602 3.70215C10.7677 2.88312 11.5588 2.21815 12.4697 1.75977C13.2668 1.35865 14.1363 1.12504 15.0244 1.07324L15.4062 1.0625ZM15.4805 1.625C14.2251 1.60956 12.9962 1.99096 11.9697 2.71387C10.9433 3.43676 10.1711 4.46523 9.7627 5.65234C9.37984 6.76536 9.3346 7.96504 9.63086 9.10059L9.69531 9.32617L9.87891 9.93555L9.42969 10.3857L1.77148 18.043L1.625 18.1895V21.375H4.81055L4.95703 21.2285L6.68066 19.5039L7.03418 19.1504L5.95703 18.0732L6.35449 17.6758L7.43164 18.7529L9.37793 16.8066L8.30078 15.7295L8.69824 15.332L9.42188 16.0557L9.77637 16.4082L10.1289 16.0547L12.6143 13.5703L13.0635 13.1201L13.6738 13.3047C14.1654 13.4539 14.6738 13.5396 15.1865 13.5586L15.4062 13.5625C16.6617 13.5626 17.8858 13.167 18.9033 12.4316C19.9207 11.6963 20.6803 10.6587 21.0742 9.4668C21.4681 8.2747 21.4758 6.9879 21.0967 5.79102C20.7176 4.59442 19.971 3.54764 18.9629 2.7998C17.9546 2.05193 16.7357 1.64051 15.4805 1.625Z' />
-                    </svg>
-                    <p>Change Password</p>
+                    {getThemeBasedIcon()} 
+                    <p className='todayhome-text text-xl self-center'>{user?.username}</p>
                 </div>
                 <div className='w-full text-[#919191] font-semibold flex flex-row gap-3'>
                     <svg
@@ -34,14 +46,14 @@ export default function SettingsModal() {
                         <path d='M15.1042 9.375C15.9671 9.375 16.6667 8.67544 16.6667 7.8125C16.6667 6.94956 15.9671 6.25 15.1042 6.25C14.2412 6.25 13.5417 6.94956 13.5417 7.8125C13.5417 8.67544 14.2412 9.375 15.1042 9.375Z' />
                         <path d='M18.2292 13.5416C19.0921 13.5416 19.7917 12.8421 19.7917 11.9791C19.7917 11.1162 19.0921 10.4166 18.2292 10.4166C17.3662 10.4166 16.6667 11.1162 16.6667 11.9791C16.6667 12.8421 17.3662 13.5416 18.2292 13.5416Z' />
                     </svg>
-                    <p>Change Theme</p>
+                    <p className='self-center'>Change Theme</p>
                     {/* SWITCH FOR CHANGING THEME */}
                     <button
                         onClick={toggleTheme}
-                        className='relative h-6 w-12 rounded-full bg-[#919191] p-1 transition-colors'>
+                        className='relative flex items-center h-full w-[25%] rounded-full settings-switch-bg p-2 transition-colors'>
                         <span
-                            className={`absolute h-4 w-4 rounded-full bg-white transition-transform ${
-                                theme === 'lavender' ? 'translate-x-6' : 'translate-x-0'
+                            className={`absolute h-[75%] w-[30%] rounded-full home-bg transition-transform ${
+                                theme === 'lavender' ? 'translate-x-8' : 'translate-x-0'
                             }`}
                         />
                     </button>

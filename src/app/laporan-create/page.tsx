@@ -45,7 +45,7 @@ const formatDate = (date: Date) => {
         weekday: 'long',
         day: '2-digit',
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
     });
 };
 
@@ -53,7 +53,7 @@ const formatTime = (timeString: string) => {
     return new Date(timeString).toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false
+        hour12: false,
     });
 };
 
@@ -61,15 +61,15 @@ const validateAccessToken = (token: string, scheduleId: string) => {
     try {
         const decoded = Buffer.from(token, 'base64').toString();
         const [tokenScheduleId, timestamp] = decoded.split('-');
-        
+
         // Check if the token matches the schedule ID
         if (tokenScheduleId !== scheduleId) return false;
-        
+
         // Check if token is not older than 5 seconds
         const tokenTime = parseInt(timestamp);
         const now = Date.now();
         const fiveSecondsInMs = 60000;
-        
+
         return now - tokenTime <= fiveSecondsInMs;
     } catch {
         return false;
@@ -79,19 +79,15 @@ const validateAccessToken = (token: string, scheduleId: string) => {
 export default function LaporanCreate() {
     const router = useRouter();
     const [isValidAccess, setIsValidAccess] = useState(false);
-    const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
-    const [selectedDamageType, setSelectedDamageType] = useState<string>(DAMAGE_TYPES.NONE);
     const [currentDamageType, setCurrentDamageType] = useState<string>(DAMAGE_TYPES.NONE);
     const [formData, setFormData] = useState<FormData>({
         deskripsi_kerusakan: '',
         foto_ruangan: null,
         foto_kerusakan: null,
         damages: [],
-        id_jadwal: 0, 
+        id_jadwal: 0,
         tanggal_laporan: new Date(),
     });
-
-    const [colorPicker, setColorPicker] = useState<ColorPickerPosition | null>(null);
 
     useEffect(() => {
         // Validate access on component mount
@@ -108,17 +104,6 @@ export default function LaporanCreate() {
     }, [router]);
 
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (colorPicker && !(event.target as Element).closest('.color-picker')) {
-                setColorPicker(null);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [colorPicker]);
-
-    useEffect(() => {
         const fetchJadwal = async () => {
             const searchParams = new URLSearchParams(window.location.search);
             const id_jadwal = searchParams.get('id_jadwal');
@@ -128,15 +113,15 @@ export default function LaporanCreate() {
                     const response = await fetch(`/api/jadwal/${id_jadwal}`);
                     if (response.ok) {
                         const jadwalData = await response.json();
-                        setFormData(prev => ({
+                        setFormData((prev) => ({
                             ...prev,
                             id_jadwal: parseInt(id_jadwal),
                             jadwal_info: {
                                 waktuMulai: jadwalData.waktuMulai,
                                 waktuSelesai: jadwalData.waktuSelesai,
                                 kelas: jadwalData.kelas,
-                                hari: jadwalData.hari
-                            }
+                                hari: jadwalData.hari,
+                            },
                         }));
                     }
                 } catch (error) {
@@ -154,14 +139,14 @@ export default function LaporanCreate() {
             // Set to current date at midnight
             userDate.setHours(0, 0, 0, 0);
             userDate.setDate(userDate.getDate());
-            
-            setFormData(prev => ({
+
+            setFormData((prev) => ({
                 ...prev,
-                tanggal_laporan: userDate
+                tanggal_laporan: userDate,
             }));
         };
 
-        updateDate(); 
+        updateDate();
         const interval = setInterval(updateDate, 60000); // Update every minute
 
         return () => clearInterval(interval);
@@ -179,35 +164,19 @@ export default function LaporanCreate() {
     };
 
     const handleSeatClick = (seatId: string, event: React.MouseEvent) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        setColorPicker({
-            x: rect.left,
-            y: rect.bottom + window.scrollY,
-            seatId
-        });
-    };
+        const currentColor = formData.damages.find((d) => d.id === seatId)?.damageType || DAMAGE_TYPES.NONE;
+        const colors = Object.values(DAMAGE_TYPES);
+        const currentIndex = colors.indexOf(currentColor);
+        const nextIndex = (currentIndex + 1) % colors.length;
+        const nextColor = colors[nextIndex];
 
-    const handleDamageTypeSelect = (damageType: string) => {
-        setSelectedDamageType(damageType);
-        if (selectedSeat) {
-            setFormData((prev) => ({
-                ...prev,
-                damages: [...prev.damages.filter((d) => d.id !== selectedSeat), { id: selectedSeat, damageType }],
-            }));
-        }
-    };
-
-    const handleColorSelect = (color: string) => {
-        if (colorPicker) {
-            setFormData(prev => ({
-                ...prev,
-                damages: [
-                    ...prev.damages.filter(d => d.id !== colorPicker.seatId),
-                    { id: colorPicker.seatId, damageType: color }
-                ]
-            }));
-            setColorPicker(null);
-        }
+        setFormData((prev) => ({
+            ...prev,
+            damages: [
+                ...prev.damages.filter((d) => d.id !== seatId), // Changed from === to !==
+                { id: seatId, damageType: nextColor }
+            ]
+        }));
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'foto_ruangan' | 'foto_kerusakan') => {
@@ -299,39 +268,33 @@ export default function LaporanCreate() {
     return (
         <div>
             <nav>
-                <Link
-                    href='/'
-                    className='flex place-items-center gap-0.5 p-4 border-b-1 border-b-[#C1C1C1] text-black bg-white'>
+                <Link href='/' className='flex place-items-center gap-0.5 p-4 border-b-1 home-bg border-primary'>
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='32'
                         height='16'
                         viewBox='0 0 44 23'
-                        style={{ fill: 'black' }}
-                        className='transform rotate-90'>
+                        className='transform rotate-90 schedulesection-fill'>
                         <path d='M31.9366 4.69964L33.8799 6.73323L23.2887 17.8096C23.119 17.9882 22.9172 18.1299 22.6949 18.2266C22.4726 18.3233 22.2342 18.373 21.9935 18.373C21.7527 18.373 21.5143 18.3233 21.292 18.2266C21.0697 18.1299 20.8679 17.9882 20.6982 17.8096L10.1016 6.73323L12.0449 4.70156L21.9907 15.0976L31.9366 4.69964Z' />
                     </svg>
-                    <p className='text-[16pt] font-medium'>Create Laporan</p>
+                    <p className='text-[16pt] font-medium schedulesection-text'>Create Laporan</p>
                 </Link>
             </nav>
 
-            <section className='mx-[5%] mt-[5%]'>
-                <p className='text-2xl font-semibold'>
-                    {formData.jadwal_info ? formatDate(new Date()) : 'Loading...'}
-                </p>
-                {formData.jadwal_info && (
-                    <p className='text-xl font-semibold'>
-                        {formatTime(formData.jadwal_info.waktuMulai)}-
-                        {formatTime(formData.jadwal_info.waktuSelesai)}{' '}
-                        {formData.jadwal_info.kelas.replace(/_/g, ' ')}
-                    </p>
-                )}
-            </section>
-
             {/* Seat Layout Section */}
-            <section className='mx-[5%] mt-[5%]'>
-                <div>
-                    <p className='font-semibold text-2xl'>Kerusakan</p>
+            <section className='px-[5%] pt-[5%] home-bg'>
+                <div className='schedulesection-text'>
+                    <p className='text-2xl font-semibold'>
+                        {formData.jadwal_info ? formatDate(new Date()) : 'Loading...'}
+                    </p>
+                    {formData.jadwal_info && (
+                        <p className='text-xl font-semibold'>
+                            {formatTime(formData.jadwal_info.waktuMulai)}-
+                            {formatTime(formData.jadwal_info.waktuSelesai)}{' '}
+                            {formData.jadwal_info.kelas.replace(/_/g, ' ')}
+                        </p>
+                    )}
+                    <p className='font-semibold text-2xl mt-5'>Kerusakan</p>
                     <p className='italic text-xs'>(Klik kursi untuk mengubah status)</p>
                 </div>
                 <div className='flex justify-between mt-5'>
@@ -346,8 +309,7 @@ export default function LaporanCreate() {
                                     backgroundColor:
                                         formData.damages.find((d) => d.id === `a${num}`)?.damageType ||
                                         DAMAGE_TYPES.NONE,
-                                }}>
-                            </div>
+                                }}></div>
                         ))}
                     </div>
 
@@ -364,8 +326,7 @@ export default function LaporanCreate() {
                                             backgroundColor:
                                                 formData.damages.find((d) => d.id === `${row}${num}`)?.damageType ||
                                                 DAMAGE_TYPES.NONE,
-                                        }}>
-                                    </div>
+                                        }}></div>
                                 ))}
                             </div>
                         ))}
@@ -382,46 +343,24 @@ export default function LaporanCreate() {
                                     backgroundColor:
                                         formData.damages.find((d) => d.id === `d${num}`)?.damageType ||
                                         DAMAGE_TYPES.NONE,
-                                }}>
-                            </div>
+                                }}></div>
                         ))}
                     </div>
                 </div>
 
-                {/* Color Picker Popup */}
-                {colorPicker && (
-                    <div 
-                        className="absolute z-50 bg-white shadow-lg rounded-lg p-2 grid grid-cols-3 gap-2 color-picker"
-                        style={{ top: colorPicker.y, left: colorPicker.x }}
-                    >
-                        {Object.entries(DAMAGE_TYPES).map(([key, color]) => (
-                            <div
-                                key={key}
-                                onClick={() => handleColorSelect(color)}
-                                className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer rounded"
-                            >
-                                <div 
-                                    className="w-6 h-6 rounded"
-                                    style={{ backgroundColor: color }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                )}
-
                 {/* Teacher's seat */}
-                <div 
+                <div
                     onClick={(e) => handleSeatClick('teacher', e)}
-                    className='w-25 h-5 mt-[10%] rounded cursor-pointer place-self-end flex items-center justify-center text-white'
+                    className='w-25 h-12 mt-[10%] rounded cursor-pointer place-self-end flex items-center justify-center text-white'
                     style={{
                         backgroundColor:
                             formData.damages.find((d) => d.id === 'teacher')?.damageType || DAMAGE_TYPES.NONE,
                     }}>
-                    <span className="text-xs">teacher</span>
+                    <span className='font-semibold'>Teacher</span>
                 </div>
             </section>
 
-            <section className='mx-[5%] mt-[5%] grid grid-cols-1'>
+            <section className='px-[5%] pt-[5%] grid grid-cols-1 home-bg schedulesection-text'>
                 <p className='italic'>Keterangan</p>
                 <div className='flex flex-row gap-1.5 place-items-center'>
                     <svg
@@ -487,9 +426,9 @@ export default function LaporanCreate() {
                 </div>
             </section>
 
-            <section className='mx-[5%] mt-[5%] mb-[10%] grid grid-cols-1 gap-6'>
+            <section className='px-[5%] pt-[5%] pb-[10%] grid grid-cols-1 gap-6 home-bg'>
                 <div className='grid grid-cols-1'>
-                    <label htmlFor='' className='text-[28px] text-gray-600'>
+                    <label htmlFor='' className='text-[28px] input-text'>
                         Detail Kerusakan
                         <span className='text-red-500'>*</span>
                     </label>
@@ -499,17 +438,19 @@ export default function LaporanCreate() {
                         rows={4}
                         maxLength={255} // Changed from 4 to allow more characters
                         value={formData.deskripsi_kerusakan}
-                        onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            deskripsi_kerusakan: e.target.value
-                        }))}
-                        className='p-2 w-full h-30 rounded-lg border-2 border-gray-500 text-sm'
+                        onChange={(e) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                deskripsi_kerusakan: e.target.value,
+                            }))
+                        }
+                        className='p-2 w-full h-30 rounded-lg border-2 announcement-textarea-bg announcement-textarea-text'
                         placeholder='Masukan Detail Kerusakan ...'></textarea>
                 </div>
 
                 {/* Foto Ruangan section */}
                 <div className='grid grid-cols-1'>
-                    <label htmlFor='foto_ruangan' className='text-[28px] text-gray-600'>
+                    <label htmlFor='foto_ruangan' className='text-[28px] input-text'>
                         Foto Ruangan
                         <span className='text-red-500'>*</span>
                     </label>
@@ -524,7 +465,7 @@ export default function LaporanCreate() {
                         />
                         {!formData.foto_ruangan && (
                             <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white'>
-                                <p>Click to upload image</p>
+                                <p className='font-semibold'>Click to upload image</p>
                             </div>
                         )}
                         <img
@@ -538,7 +479,7 @@ export default function LaporanCreate() {
 
                 {/* Foto Kerusakan section */}
                 <div className='grid grid-cols-1'>
-                    <label htmlFor='foto_kerusakan' className='mt-[5%] text-gray-600'>
+                    <label htmlFor='foto_kerusakan' className='input-text'>
                         Foto Kerusakan (Bila Ada)
                         <span className='text-red-500'>*</span>
                     </label>
@@ -553,7 +494,7 @@ export default function LaporanCreate() {
                         />
                         {!formData.foto_kerusakan && (
                             <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white'>
-                                <p>Click to upload image</p>
+                                <p className='font-semibold'>Click to upload image</p>
                             </div>
                         )}
                         <img
@@ -565,10 +506,10 @@ export default function LaporanCreate() {
                     </div>
                 </div>
 
-                <button 
-                    type="submit"
+                <button
+                    type='submit'
                     onClick={handleSubmit}
-                    className='bg-[#8FA9FF] text-white text-3xl font-semibold p-1.5 rounded-xl hover:bg-[#7B91E5] transition-colors disabled:bg-gray-400'>
+                    className='announcement-btn laporancreation-text text-3xl font-semibold p-1.5 rounded-xl hover:bg-[#7B91E5] transition-colors disabled:bg-gray-400'>
                     Selesai
                 </button>
             </section>

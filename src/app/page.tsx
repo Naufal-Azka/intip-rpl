@@ -57,7 +57,7 @@ export default function Home() {
     const { user } = useAuth();
 
     return (
-        <div>
+        <div className='home-bg min-h-screen'>
             {/* Navigation Bar */}
             <NavigationBar />
 

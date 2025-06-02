@@ -11,10 +11,26 @@ interface ScheduleItemProps {
 }
 
 const statusConfig = {
-    current: { bg: 'bg-[#69AF4E]', text: 'text-white', fill: '#ffffff' },
-    upcoming: { bg: 'bg-[#A3A3A3]', text: 'text-[#515151]', fill: '#515151' },
-    finished: { bg: 'bg-[#D69595]', text: 'text-[#936363]', fill: '#936363' },
-    completedReport: { bg: 'bg-[#69AF4E]', text: 'text-white', fill: '#ffffff' }, // Add new status
+    current: { 
+        bg: 'schedulecurrent-bg', 
+        text: 'schedulecurrent-text', 
+        fill: 'schedulecurrent-fill' 
+    },
+    upcoming: { 
+        bg: 'scheduleupcoming-bg', 
+        text: 'scheduleupcoming-text', 
+        fill: '#a88fac' 
+    },
+    finished: { 
+        bg: 'bg-[#D69595]', 
+        text: 'text-[#936363]', 
+        fill: '#936363' 
+    },
+    completedReport: { 
+        bg: 'schedulecompleted-bg', 
+        text: 'schedulecompleted-text', 
+        fill: 'schedulecompleted-fill' 
+    },
 } as const;
 
 export default function ScheduleItem({
@@ -26,16 +42,14 @@ export default function ScheduleItem({
     isExpanded,
 }: ScheduleItemProps) {
     // First check if kelas is 'KOSONG', otherwise use normal status logic
-    const effectiveStatus = kelas === 'KOSONG' 
-        ? 'upcoming' 
-        : (status === 'finished' && hasLaporan ? 'completedReport' : status);
+    const effectiveStatus =
+        kelas === 'Kosong' ? 'upcoming' : status === 'finished' && hasLaporan ? 'completedReport' : status;
     const { bg, text, fill } = statusConfig[effectiveStatus];
 
     return (
-        <div
-            className={`flex flex-row place-items-center justify-between ${bg} ${text} font-medium p-1 ${
-                isExpanded ? 'py-2' : 'py-1'
-            } px-3.5`}>
+        <div className={`flex flex-row place-items-center justify-between theme-transition ${bg} ${text} font-medium p-1 ${
+            isExpanded ? 'py-2' : 'py-1'
+        } px-3.5`}>
             <p className='text-sm flex flex-row place-items-center'>
                 {convertDBTimeToWIB(waktuMulai)}
                 {' - '}
@@ -45,9 +59,17 @@ export default function ScheduleItem({
                 </svg>
                 {kelas.replaceAll('_', ' ')}
             </p>
-            {(status === 'finished' && (hasLaporan ? <CompletedIcon /> : <FinishedIcon />)) || status === 'current' ? (
-                <CurrentIcon />
-            ) : null}
+            {kelas !== 'KOSONG' &&
+                kelas !== 'Kosong' &&
+                (status === 'finished' ? (
+                    hasLaporan ? (
+                        <CompletedIcon />
+                    ) : (
+                        <FinishedIcon />
+                    )
+                ) : status === 'current' ? (
+                    <CurrentIcon />
+                ) : null)}
         </div>
     );
 }
@@ -55,10 +77,10 @@ export default function ScheduleItem({
 function CurrentIcon() {
     return (
         <div className='flex flex-row place-items-center'>
-            <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 15 15' style={{ fill: '#fff' }}>
+            <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 15 15' className='schedulecurrent-fill'>
                 <path d='M5 1.25C4.3125 1.25 3.75 1.8125 3.75 2.5L3.75625 4.4875C3.75625 4.81875 3.8875 5.13125 4.11875 5.36875L6.25 7.5L4.11875 9.64375C3.8875 9.875 3.75625 10.1938 3.75625 10.525L3.75 12.5C3.75 13.1875 4.3125 13.75 5 13.75H10C10.6875 13.75 11.25 13.1875 11.25 12.5V10.525C11.25 10.1938 11.1188 9.875 10.8875 9.64375L8.75 7.5L10.8812 5.375C11.1188 5.1375 11.25 4.81875 11.25 4.4875V2.5C11.25 1.8125 10.6875 1.25 10 1.25H5ZM10 10.5688V11.875C10 12.2188 9.71875 12.5 9.375 12.5H5.625C5.28125 12.5 5 12.2188 5 11.875V10.5688C5 10.4 5.06875 10.2438 5.18125 10.125L7.5 7.8125L9.81875 10.1312C9.93125 10.2437 10 10.4062 10 10.5688Z' />
             </svg>
-            <p className='text-sm'>Dipakai</p>
+            <p className='text-sm schedulecurrent-text'>Dipakai</p>
         </div>
     );
 }

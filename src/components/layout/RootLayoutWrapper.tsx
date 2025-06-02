@@ -12,7 +12,7 @@ interface RootLayoutWrapperProps {
 export default function RootLayoutWrapper({ children, beVietnamProVariable }: RootLayoutWrapperProps) {
     return (
         <html lang='en'>
-            <body className={`${beVietnamProVariable} antialiased`}>
+            <body className={`${beVietnamProVariable} antialiased theme-transition`}>
                 <ThemeProvider>
                     <AuthProvider>{children}</AuthProvider>
                 </ThemeProvider>

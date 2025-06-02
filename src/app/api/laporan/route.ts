@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
@@ -132,4 +132,76 @@ async function saveFile(file: File, prefix: string): Promise<string> {
 
     await writeFile(filepath, buffer);
     return `/uploads/${filename}`;
+}
+
+export async function GET(request: NextRequest) {
+    const searchParams = request.nextUrl.searchParams;
+    const range = searchParams.get('range') || 'today';
+
+    const now = new Date();
+    const startDate = new Date();
+
+    // Adjust timezone offset to WIB (UTC+7)
+    const wibOffset = 0 * 60 * 60 * 1000; // 7 hours in milliseconds
+    now.setTime(now.getTime() + wibOffset);
+    startDate.setTime(startDate.getTime() + wibOffset);
+
+    switch (range) {
+        case 'yesterday':
+            startDate.setDate(now.getDate() - 1);
+            startDate.setHours(0, 0, 0, 0);
+            now.setDate(now.getDate() - 1);
+            now.setHours(23, 59, 59, 999);
+            break;
+        case '7days':
+            startDate.setDate(now.getDate() - 7);
+            startDate.setHours(0, 0, 0, 0);
+            now.setHours(23, 59, 59, 999);
+            break;
+        case '30days':
+            startDate.setDate(now.getDate() - 30);
+            startDate.setHours(0, 0, 0, 0);
+            now.setHours(23, 59, 59, 999);
+            break;
+        default: // today
+            startDate.setHours(0, 0, 0, 0);
+            now.setHours(23, 59, 59, 999);
+    }
+
+    try {
+        const laporan = await prisma.laporan.findMany({
+            where: {
+                tanggal_laporan: {
+                    gte: startDate,
+                    lte: now,
+                },
+            },
+            include: {
+                jadwal: true,
+            },
+            orderBy: [
+                {
+                    tanggal_laporan: 'desc',
+                },
+                {
+                    id: 'desc',
+                },
+            ],
+        });
+
+        console.log('Date range:', {
+            range,
+            startDate: startDate.toISOString(),
+            endDate: now.toISOString(),
+            resultsCount: laporan.length
+        });
+
+        return NextResponse.json(laporan);
+    } catch (error) {
+        console.error('Database error:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch laporan' },
+            { status: 500 }
+        );
+    }
 }

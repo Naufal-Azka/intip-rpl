@@ -45,7 +45,7 @@ export default function ScheduleSection({
     };
 
     return (
-        <section className='mx-[10%] grid grid-cols-1 gap-8 mb-8'>
+        <section className='px-[10%] grid grid-cols-1 gap-8 pb-[10%]'>
             {Object.entries(jadwalByLab)
                 .sort(([a], [b]) => parseInt(a.split('_')[1]) - parseInt(b.split('_')[1]))
                 .map(([lab, schedules]) => {
@@ -100,15 +100,15 @@ function LabHeader({ lab, isExpanded, onToggle }: { lab: string; isExpanded: boo
     return (
         <div
             onClick={onToggle}
-            className='flex flex-row bg-gray-200 px-7 py-3 rounded-t-3xl place-items-center justify-between cursor-pointer'>
-            <p className='font-semibold text-2xl'>Lab. {lab.replace('_', ' ')}</p>
+            className='schedulesction-bg flex flex-row px-7 py-3 rounded-t-3xl place-items-center justify-between cursor-pointer'>
+            <p className='schedulesection-text font-semibold text-2xl'>Lab. {lab.replace('_', ' ')}</p>
             <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width='44'
                 height='23'
                 viewBox='0 0 44 23'
+                className='schedulesection-fill'
                 style={{
-                    fill: 'rgba(0, 0, 0, 1)',
                     transform: `rotate(${isExpanded ? '0deg' : '180deg'})`,
                     transition: 'transform 0.3s ease',
                 }}>
