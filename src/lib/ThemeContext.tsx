@@ -9,17 +9,23 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<ThemeType>('default');
+const getInitialTheme = (): ThemeType => {
+        if (typeof window !== 'undefined') {
+            const savedTheme = localStorage.getItem('theme') as ThemeType;
+            if (savedTheme && themes[savedTheme]) {
+                return savedTheme;
+            }
+        }
+        return 'default';
+    };
+
+    const [theme, setTheme] = useState<ThemeType>(getInitialTheme);
 
     useEffect(() => {
-        // Load saved theme from localStorage on mount
-        const savedTheme = localStorage.getItem('theme') as ThemeType;
-        if (savedTheme && themes[savedTheme]) {
-            setTheme(savedTheme);
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        }
-    }, []);
-
+        // Apply theme on mount and theme changes
+        document.documentElement.setAttribute('data-theme', theme);
+    }, [theme]);
+    
     const toggleTheme = () => {
         const newTheme = theme === 'default' ? 'lavender' : 'default';
         setTheme(newTheme);

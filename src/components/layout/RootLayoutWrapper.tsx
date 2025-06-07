@@ -10,6 +10,13 @@ interface RootLayoutWrapperProps {
 }
 
 export default function RootLayoutWrapper({ children, beVietnamProVariable }: RootLayoutWrapperProps) {
+    const themeScript = `
+        (function() {
+            const theme = localStorage.getItem('theme') || 'default';
+            document.documentElement.setAttribute('data-theme', theme);
+        })()
+    `;
+    
     return (
         <html lang='en'>
             <body className={`${beVietnamProVariable} antialiased theme-transition`}>
