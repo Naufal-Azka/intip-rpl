@@ -163,23 +163,23 @@ export default function JadwalUpdate() {
             const proposedStartMinutes = timeToMinutes(proposedStart);
             const proposedEndMinutes = timeToMinutes(proposedEnd);
 
-            const hasOverlap = labSchedules.some((schedule) => {
-                if (schedule.id === scheduleId) return false;
+            // const hasOverlap = labSchedules.some((schedule) => {
+            //     if (schedule.id === scheduleId) return false;
 
-                const otherStartMinutes = timeToMinutes(schedule.waktuMulai);
-                const otherEndMinutes = timeToMinutes(schedule.waktuSelesai);
+            //     const otherStartMinutes = timeToMinutes(schedule.waktuMulai);
+            //     const otherEndMinutes = timeToMinutes(schedule.waktuSelesai);
 
-                return (
-                    (proposedStartMinutes >= otherStartMinutes && proposedStartMinutes < otherEndMinutes) ||
-                    (proposedEndMinutes > otherStartMinutes && proposedEndMinutes <= otherEndMinutes) ||
-                    (proposedStartMinutes <= otherStartMinutes && proposedEndMinutes >= otherEndMinutes)
-                );
-            });
+            //     return (
+            //         (proposedStartMinutes >= otherStartMinutes && proposedStartMinutes < otherEndMinutes) ||
+            //         (proposedEndMinutes > otherStartMinutes && proposedEndMinutes <= otherEndMinutes) ||
+            //         (proposedStartMinutes <= otherStartMinutes && proposedEndMinutes >= otherEndMinutes)
+            //     );
+            // });
 
-            if (hasOverlap || proposedEndMinutes <= proposedStartMinutes) {
-                alert('Waktu yang dipilih bertabrakan dengan jadwal lain atau tidak valid!');
-                return prev;
-            }
+            // if (hasOverlap || proposedEndMinutes <= proposedStartMinutes) {
+            //     alert('Waktu yang dipilih bertabrakan dengan jadwal lain atau tidak valid!');
+            //     return prev;
+            // }
 
             return {
                 ...prev,

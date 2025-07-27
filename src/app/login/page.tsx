@@ -78,9 +78,6 @@ export default function Login() {
                     Login
                 </button>
             </form>
-            <Link href='/forgot-password' className='min-w-full mt-2 px-6 underline italic'>
-                Lupa Password?
-            </Link>
         </div>
     );
 }
