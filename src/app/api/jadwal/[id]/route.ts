@@ -3,14 +3,21 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function GET(request: Request) {
     try {
+        const url = new URL(request.url);
+        const id = url.pathname.split('/').pop(); // ambil id dari path
+
+        if (!id) {
+            return NextResponse.json(
+                { error: 'ID is required' },
+                { status: 400 }
+            );
+        }
+
         const jadwal = await prisma.jadwal.findUnique({
             where: {
-                id: parseInt(params.id)
+                id: parseInt(id)
             }
         });
 
