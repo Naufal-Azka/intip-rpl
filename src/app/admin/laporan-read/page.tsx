@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
@@ -45,6 +45,15 @@ const formatDate = (date: string) => {
 };
 
 export default function LaporanRead() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LaporanReadContent />
+        </Suspense>
+    );
+}
+
+// Move your current logic into a new component
+function LaporanReadContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [dateRange, setDateRange] = useState<DateRange>('today');
