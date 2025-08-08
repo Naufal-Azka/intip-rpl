@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id                Int     @id @default(autoincrement())
+  username          String
+  association_kelas Kelas   @default(Kosong)
+  password          String
+  role              Role
+}
+
+model Jadwal{
+  id                Int      @id @default(autoincrement())
+  hari              Hari
+  lab               Lab
+  kelas             Kelas    @default(Kosong)
+  waktuMulai        DateTime @db.Time(0)
+  waktuSelesai      DateTime @db.Time(0)
+  laporan           Laporan[]
+  laporan_reference LaporanJadwalReference[]
+}
+
+model Laporan{
+  id                  Int    @id @default(autoincrement())
+  id_jadwal           Int
+  foto_ruangan        String
+  foto_kerusakan      String
+  deskripsi_kerusakan String
+  kerusakan_1         String
+  kerusakan_2         String
+  kerusakan_3         String
+  kerusakan_4         String
+  kerusakan_5         String
+  tanggal_laporan     DateTime @db.Date()
+  jadwal              Jadwal @relation(fields: [id_jadwal], references: [id])
+  related_jadwal      LaporanJadwalReference[]
+}
+
+model LaporanJadwalReference {
+  id          Int      @id @default(autoincrement())
+  id_laporan  Int
+  id_jadwal   Int
+  laporan     Laporan  @relation(fields: [id_laporan], references: [id])
+  jadwal      Jadwal   @relation(fields: [id_jadwal], references: [id])
+
+  @@unique([id_laporan, id_jadwal])
+}
+
+model Announcement {
+  id         String   @id @default(cuid())
+  content    String
+  authorName String
+  createdAt  DateTime @default(now())
+}
+
+enum Role{
+  USER
+  ADMIN
+}
+
+enum Hari{
+  Senin
+  Selasa
+  Rabu
+  Kamis
+  Jumat
+}
+
+enum Lab{
+  RPL_1
+  RPL_2
+  RPL_3
+}
+
+enum Kelas{
+  Kosong
+  X_PPLG_1
+  X_PPLG_2
+  X_PPLG_3
+  XI_PPLG_1
+  XI_PPLG_2
+  XI_PPLG_3
+  XII_PPLG_1
+  XII_PPLG_2
+  XII_PPLG_3
+}
