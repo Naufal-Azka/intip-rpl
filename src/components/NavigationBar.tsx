@@ -91,16 +91,16 @@ export default function NavigationBar() {
 
             {/* Navigation Items with Slide Down Animation */}
             <div
-                className={`fixed top-[52px] left-0 right-0 z-1 home-bg transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`fixed top-[53px] left-0 right-0 z-1 home-bg transition-all duration-300 ease-in-out overflow-hidden ${
                     isNavOpen ? 'max-h-screen visible' : 'max-h-0 opacity-0 invisible'
                 }`}>
-                <div className='w-full home-bg username-navbar-text'>
+                <div className='w-full home-bg username-navbar-text lg:max-w-[80%] lg:mx-auto'>
                     {isNavOpen && (
                         <>
                             {!user && (
                                 <Link
                                     href='/jadwal'
-                                    className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                    className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                     Jadwal
                                 </Link>
                             )}
@@ -109,12 +109,12 @@ export default function NavigationBar() {
                                 <>
                                     <Link
                                         href='/jadwal'
-                                        className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                         Jadwal
                                     </Link>
                                     <button
                                         onClick={handleSettingsClick}
-                                        className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                         Settings
                                     </button>
                                 </>
@@ -124,22 +124,22 @@ export default function NavigationBar() {
                                 <>
                                     <Link
                                         href='/jadwal'
-                                        className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                         Jadwal
                                     </Link>
                                     <Link
                                         href='/admin/laporan-read'
-                                        className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                         Laporan
                                     </Link>
                                     <Link
                                         href='/admin/jadwal-update'
-                                        className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                         Edit Jadwal
                                     </Link>
                                     <button
                                         onClick={handleSettingsClick}
-                                        className='block w-full p-3 border-b-2 home-bg border-primary text-center transition-colors'>
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
                                         Settings
                                     </button>
                                 </>
@@ -148,7 +148,7 @@ export default function NavigationBar() {
                             {user && (
                                 <button
                                     onClick={handleLogout}
-                                    className='block w-full p-3 border-b-2 home-bg border-primary font-semibold text-center text-red-500 transition-colors'>
+                                    className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary font-semibold text-center text-red-500 transition-colors'>
                                     Logout
                                 </button>
                             )}

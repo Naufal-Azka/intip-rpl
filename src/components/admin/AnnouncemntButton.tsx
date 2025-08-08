@@ -8,7 +8,7 @@ export default function AnnoucementButton() {
     return (
         <>
             <section
-                className='fixed rounded-full home-bg shadow-[0_5px_15px_rgba(0,0,0,0.35)] bottom-8 right-5 p-1 cursor-pointer'
+                className='fixed rounded-full home-bg shadow-[0_5px_15px_rgba(0,0,0,0.35)] bottom-8 right-2 lg:right-40 p-1 cursor-pointer'
                 onClick={() => setIsModalOpen(true)}>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'

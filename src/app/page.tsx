@@ -57,19 +57,21 @@ export default function Home() {
     const { user } = useAuth();
 
     return (
-        <div className='home-bg min-h-screen'>
+        <div className='home-bg min-h-screen lg:max-w-[80%] lg:mx-auto lg:border lg:border-[#d1d5db]'>
             {/* Navigation Bar */}
             <NavigationBar />
 
             {/* Bagian Pengumuman */}
             <Announcement />
 
-            {/* Bagian untuk membuat Laporan */}
-            <LaporanCreationSection
-                user={user}
-                jadwal={jadwal}
-                getJadwalStatus={(start, end) => getJadwalStatus(start, end, isWeekend)}
-            />
+            {/* Bagian untuk membuat Laporan hanya untuk user*/}
+            {user?.role != 'ADMIN' && 
+                <LaporanCreationSection
+                    user={user}
+                    jadwal={jadwal}
+                    getJadwalStatus={(start, end) => getJadwalStatus(start, end, isWeekend)}
+                />
+            }
 
             {/* Menampilkan Tanggal Hari ini */}
             <TodayHome />

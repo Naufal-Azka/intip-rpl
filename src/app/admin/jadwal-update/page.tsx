@@ -46,7 +46,7 @@ const convertToDisplayTime = (date: Date) => {
 
 const convertToUTCTime = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
-    const utcHours = (hours - 7 + 24) % 24;
+    const utcHours = (hours + 10 + 24) % 24;
     return `${utcHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
 
@@ -160,8 +160,8 @@ export default function JadwalUpdate() {
             const proposedStart = field === 'waktuMulai' ? sanitizedValue : currentSchedule.waktuMulai;
             const proposedEnd = field === 'waktuSelesai' ? sanitizedValue : currentSchedule.waktuSelesai;
 
-            const proposedStartMinutes = timeToMinutes(proposedStart);
-            const proposedEndMinutes = timeToMinutes(proposedEnd);
+            // const proposedStartMinutes = timeToMinutes(proposedStart);
+            // const proposedEndMinutes = timeToMinutes(proposedEnd);
 
             // const hasOverlap = labSchedules.some((schedule) => {
             //     if (schedule.id === scheduleId) return false;
@@ -233,7 +233,7 @@ export default function JadwalUpdate() {
         }
     };
     return (
-        <div>
+        <div >
             <nav>
                 <Link href='/' className='flex place-items-center gap-0.5 p-4 border-b-1 home-bg border-primary'>
                     <svg
@@ -366,7 +366,7 @@ export default function JadwalUpdate() {
 
             <button
                 onClick={handleSaveChanges}
-                className='fixed bottom-0 announcement-btn text-lg font-semibold p-2 mx-[5%] my-4 w-[90%] rounded-xl'>
+                className='cursor-pointer fixed bottom-0 announcement-btn text-lg font-semibold p-2 mx-[5%] my-4 w-[90%] rounded-xl'>
                 Simpan Perubahan
             </button>
         </div>
