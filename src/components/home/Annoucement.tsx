@@ -29,7 +29,7 @@ export default function Announcement() {
 
     return (
         <section className='announcement-bg todayhome-text grid grid-cols-1 pb-4 pt-4'>
-            <div className='flex flex-row place-items-center gap-2 mx-[10%] my-[1%]'>
+            <div className='flex flex-row place-items-center gap-2 mx-[10%] my-[1%] lg:my-0 lg:mt-5'>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='32'
@@ -40,12 +40,12 @@ export default function Announcement() {
                 </svg>
                 <p className='font-semibold text-2xl'>Announcement</p>
             </div>
-            <div className='home-bg py-4 pl-4 m-4 rounded-lg'>
+            <div className='home-bg lg:mx-22 py-4 pl-4 m-4 rounded-lg'>
                 <div className='flex flex-row place-items-center gap-3'>
-                    <div className='rounded-full bg-gray-200 w-7 h-7'></div>
-                    <p className='font-semibold'>{announcement.authorName}</p>
+                    <div className='rounded-full bg-gray-200 w-7 h-7 lg:w-10 lg:h-10'></div>
+                    <p className='font-semibold lg:text-xl'>{announcement.authorName}</p>
                 </div>
-                <p className='text-sm mx-[10%] mb-2 text-justify'>{announcement.content}</p>
+                <p className='text-sm lg:text-base mx-[10%] lg:mx-13 lg:mt-1 mb-2 text-justify'>{announcement.content}</p>
             </div>
         </section>
     );

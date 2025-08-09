@@ -146,36 +146,44 @@ export async function GET(request: NextRequest) {
     now.setTime(now.getTime() + wibOffset);
     startDate.setTime(startDate.getTime() + wibOffset);
 
-    switch (range) {
-        case 'yesterday':
-            startDate.setDate(now.getDate() - 1);
-            startDate.setHours(0, 0, 0, 0);
-            now.setDate(now.getDate() - 1);
-            now.setHours(23, 59, 59, 999);
-            break;
-        case '7days':
-            startDate.setDate(now.getDate() - 7);
-            startDate.setHours(0, 0, 0, 0);
-            now.setHours(23, 59, 59, 999);
-            break;
-        case '30days':
-            startDate.setDate(now.getDate() - 30);
-            startDate.setHours(0, 0, 0, 0);
-            now.setHours(23, 59, 59, 999);
-            break;
-        default: // today
-            startDate.setHours(0, 0, 0, 0);
-            now.setHours(23, 59, 59, 999);
+    let whereClause = {};
+
+    if (range === 'all') {
+        // Tidak filter tanggal
+        whereClause = {};
+    } else {
+        switch (range) {
+            case 'yesterday':
+                startDate.setDate(now.getDate() - 1);
+                startDate.setHours(0, 0, 0, 0);
+                now.setDate(now.getDate() - 1);
+                now.setHours(23, 59, 59, 999);
+                break;
+            case '7days':
+                startDate.setDate(now.getDate() - 7);
+                startDate.setHours(0, 0, 0, 0);
+                now.setHours(23, 59, 59, 999);
+                break;
+            case '30days':
+                startDate.setDate(now.getDate() - 30);
+                startDate.setHours(0, 0, 0, 0);
+                now.setHours(23, 59, 59, 999);
+                break;
+            default: // today
+                startDate.setHours(0, 0, 0, 0);
+                now.setHours(23, 59, 59, 999);
+        }
+        whereClause = {
+            tanggal_laporan: {
+                gte: startDate,
+                lte: now,
+            },
+        };
     }
 
     try {
         const laporan = await prisma.laporan.findMany({
-            where: {
-                tanggal_laporan: {
-                    gte: startDate,
-                    lte: now,
-                },
-            },
+            where: whereClause,
             include: {
                 jadwal: true,
             },

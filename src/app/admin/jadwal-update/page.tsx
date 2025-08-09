@@ -233,7 +233,7 @@ export default function JadwalUpdate() {
         }
     };
     return (
-        <div >
+        <div className='lg:w-[70%] lg:mx-auto lg:border lg:border-[#d1d5db]'>
             <nav>
                 <Link href='/' className='flex place-items-center gap-0.5 p-4 border-b-1 home-bg border-primary'>
                     <svg
@@ -248,15 +248,15 @@ export default function JadwalUpdate() {
                 </Link>
             </nav>
 
-            <div className='px-[5%] pt-[5%] home-bg '>
+            <div className='px-[5%] pt-[5%] lg:pt-[4%] home-bg '>
                 {/* FILTER */}
-                <div className='schedule-bg border-1 border-full rounded-lg grid grid-cols-2 gap-2.5 p-2.5 mb-5'>
+                <div className='schedule-bg border-1 border-full rounded-lg grid grid-cols-2 gap-2.5 lg:gap-4 p-2.5 lg:p-4 mb-5'>
                     <div>
-                        <p className='font-medium mb-1.5 todayhome-text'>Hari</p>
+                        <p className='lg:text-xl font-medium mb-1.5 todayhome-text'>Hari</p>
                         <select
                             value={selectedDay}
                             onChange={(e) => setSelectedDay(e.target.value as Hari)}
-                            className='w-full h-7.5 schedule-item-bg schedule-text border-none rounded-sm pl-1.5'>
+                            className='w-full h-7.5 lg:text-lg schedule-item-bg schedule-text border-none rounded-sm pl-1.5'>
                             {Object.values(Hari).map((day) => (
                                 <option key={day} value={day}>
                                     {day}
@@ -265,11 +265,11 @@ export default function JadwalUpdate() {
                         </select>
                     </div>
                     <div>
-                        <p className='font-medium mb-1.5 todayhome-text'>Lab</p>
+                        <p className='lg:text-xl font-medium mb-1.5 todayhome-text'>Lab</p>
                         <select
                             value={selectedLab}
                             onChange={(e) => setSelectedLab(e.target.value)}
-                            className='w-full h-7.5 schedule-item-bg schedule-text border-none rounded-sm pl-1.5'>
+                            className='w-full h-7.5 lg:text-lg schedule-item-bg schedule-text border-none rounded-sm pl-1.5'>
                             <option value='Semua'>Semua</option>
                             {Object.values(Lab).map((lab) => (
                                 <option key={lab} value={lab}>
@@ -290,19 +290,19 @@ export default function JadwalUpdate() {
                     Object.entries(schedules)
                         .filter(([lab]) => selectedLab === 'Semua' || lab === selectedLab)
                         .map(([lab, labSchedules]) => (
-                            <div key={lab} className='schedule-bg border-1 border-full rounded-lg mb-8 p-2.5'>
+                            <div key={lab} className='schedule-bg border-1 border-full rounded-lg mb-8 p-2.5 lg:px-5'>
                                 <div className="text-center font-semibold mb-2.5 relative after:content-[''] after:block after:h-[1px] after:bg-[#666] after:mt-1.5">
-                                    <p className='mb-2 schedule-text'>
+                                    <p className='mb-2 schedule-text lg:text-xl lg:my-1'>
                                         Lab.{lab.replace('_', ' ')}
-                                        <span className='absolute right-0 top-0 text-xl bg-none border-none cursor-pointer schedule-text'>
+                                        <span className='absolute right-0 top-0 text-2xl bg-none border-none cursor-pointer schedule-text'>
                                             +
                                         </span>
                                     </p>
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     {labSchedules.map((schedule) => (
-                                        <div key={schedule.id} className='mt-2 mb-2'>
-                                            <div className='flex items-center gap-1 mb-2'>
+                                        <div key={schedule.id} className='mt-2 mb-2 '>
+                                            <div className='flex items-center gap-1 lg:gap-2'>
                                                 <input
                                                     type='time'
                                                     value={schedule.waktuMulai}
@@ -314,9 +314,9 @@ export default function JadwalUpdate() {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'
+                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm lg:text-base'
                                                 />
-                                                <span className='text-lg font-bold'>-</span>
+                                                <span className='text-lg lg:text-2xl font-bold'>-</span>
                                                 <input
                                                     type='time'
                                                     value={schedule.waktuSelesai}
@@ -328,7 +328,7 @@ export default function JadwalUpdate() {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'
+                                                    className='w-[25%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm lg:text-base'
                                                 />
                                                 <select
                                                     value={schedule.kelas}
@@ -340,7 +340,7 @@ export default function JadwalUpdate() {
                                                             e.target.value as Kelas
                                                         )
                                                     }
-                                                    className='w-[35%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm'>
+                                                    className='w-[45%] h-9 schedule-item-bg schedule-text border-1 border-full rounded p-0 px-1.5 text-sm lg:text-base'>
                                                     {Object.values(Kelas).map((kelas) => (
                                                         <option key={kelas} value={kelas}>
                                                             {kelas.replace(/_/g, ' ')}
@@ -348,14 +348,14 @@ export default function JadwalUpdate() {
                                                     ))}
                                                 </select>
                                             </div>
-                                            <div className='relative flex items-center mt-1'>
+                                            {/* <div className='relative flex items-center mt-1'>
                                                 <span className='absolute right-0 top-[50%] translate-y-[-50%] h-9 w-[30px] bg-none schedule-text text-xl pl-[4%] ml-[5px] border-none cursor-pointer'>
                                                     –
                                                 </span>
                                                 <select className='teacher'>
                                                     <option>Hanif Saeful</option>
                                                 </select>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     ))}
                                 </div>
@@ -366,7 +366,7 @@ export default function JadwalUpdate() {
 
             <button
                 onClick={handleSaveChanges}
-                className='cursor-pointer fixed bottom-0 announcement-btn text-lg font-semibold p-2 mx-[5%] my-4 w-[90%] rounded-xl'>
+                className='cursor-pointer fixed bottom-0 announcement-btn text-lg font-semibold p-2 mx-[5%] my-4 w-[90%] lg:w-[60%] rounded-xl'>
                 Simpan Perubahan
             </button>
         </div>

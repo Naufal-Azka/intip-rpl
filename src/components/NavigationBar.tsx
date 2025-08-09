@@ -87,7 +87,7 @@ export default function NavigationBar() {
 
     return (
         <div ref={navRef} className='grid grid-cols-1 place-items-center min-w-full'>
-            <div className='home-bg grid grid-cols-4 min-w-full p-2 border-b-2 border-primary'>
+            <div className='home-bg grid grid-cols-4 min-w-full p-2 lg:px-10 lg:py-3 border-b-2 border-primary'>
                 <Link href='/' className='col-span-1'>
                     {getThemeBasedLogo()}
                 </Link>
@@ -118,80 +118,80 @@ export default function NavigationBar() {
                         Login
                     </Link>
                 )}
+                <div
+                    className={`fixed top-[53px] left-0 right-0 z-1 home-bg transition-all duration-300 ease-in-out overflow-hidden
+                        ${isNavOpen
+                            ? 'max-h-screen opacity-100 visible translate-y-0'
+                            : 'max-h-0 opacity-0 invisible -translate-y-full'
+                        }
+                    `}
+                    style={{ transitionProperty: 'max-height, opacity, transform' }}
+                >
+                    <div className='w-full home-bg username-navbar-text lg:max-w-[70%] lg:mx-auto'>
+                        {isNavOpen && (
+                            <>
+                                {!user && (
+                                    <Link
+                                        href='/jadwal'
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                        Jadwal
+                                    </Link>
+                                )}
+
+                                {user && user.role === 'USER' && (
+                                    <>
+                                        <Link
+                                            href='/jadwal'
+                                            className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                            Jadwal
+                                        </Link>
+                                        <button
+                                            onClick={handleSettingsClick}
+                                            className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                            Settings
+                                        </button>
+                                    </>
+                                )}
+
+                                {user && user.role === 'ADMIN' && (
+                                    <>
+                                        <Link
+                                            href='/jadwal'
+                                            className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                            Jadwal
+                                        </Link>
+                                        <Link
+                                            href='/admin/laporan-read'
+                                            className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                            Laporan
+                                        </Link>
+                                        <Link
+                                            href='/admin/jadwal-update'
+                                            className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                            Edit Jadwal
+                                        </Link>
+                                        <button
+                                            onClick={handleSettingsClick}
+                                            className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
+                                            Settings
+                                        </button>
+                                    </>
+                                )}
+
+                                {user && (
+                                    <button
+                                        onClick={handleLogout}
+                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary font-semibold text-center text-red-500 transition-colors'>
+                                        Logout
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Navigation Items with Slide Down/Up Animation */}
-            <div
-                className={`fixed top-[53px] left-0 right-0 z-1 home-bg transition-all duration-300 ease-in-out overflow-hidden
-                    ${isNavOpen
-                        ? 'max-h-screen opacity-100 visible translate-y-0'
-                        : 'max-h-0 opacity-0 invisible -translate-y-full'
-                    }
-                `}
-                style={{ transitionProperty: 'max-height, opacity, transform' }}
-            >
-                <div className='w-full home-bg username-navbar-text lg:max-w-[80%] lg:mx-auto'>
-                    {isNavOpen && (
-                        <>
-                            {!user && (
-                                <Link
-                                    href='/jadwal'
-                                    className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                    Jadwal
-                                </Link>
-                            )}
-
-                            {user && user.role === 'USER' && (
-                                <>
-                                    <Link
-                                        href='/jadwal'
-                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                        Jadwal
-                                    </Link>
-                                    <button
-                                        onClick={handleSettingsClick}
-                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                        Settings
-                                    </button>
-                                </>
-                            )}
-
-                            {user && user.role === 'ADMIN' && (
-                                <>
-                                    <Link
-                                        href='/jadwal'
-                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                        Jadwal
-                                    </Link>
-                                    <Link
-                                        href='/admin/laporan-read'
-                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                        Laporan
-                                    </Link>
-                                    <Link
-                                        href='/admin/jadwal-update'
-                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                        Edit Jadwal
-                                    </Link>
-                                    <button
-                                        onClick={handleSettingsClick}
-                                        className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary text-center transition-colors'>
-                                        Settings
-                                    </button>
-                                </>
-                            )}
-
-                            {user && (
-                                <button
-                                    onClick={handleLogout}
-                                    className='block w-full p-3 border-b-2 lg:border-x-2 lg:border-[#d1d5db] home-bg border-primary font-semibold text-center text-red-500 transition-colors'>
-                                    Logout
-                                </button>
-                            )}
-                        </>
-                    )}
-                </div>
-            </div>
             {/* Add the modal at the bottom of the component */}
             {isSettingsOpen && <SettingsModal onClose={() => setIsSettingsOpen(false)} />}
         </div>

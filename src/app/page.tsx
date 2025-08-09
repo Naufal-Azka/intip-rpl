@@ -57,7 +57,7 @@ export default function Home() {
     const { user } = useAuth();
 
     return (
-        <div className='home-bg min-h-screen lg:max-w-[80%] lg:mx-auto lg:border lg:border-[#d1d5db]'>
+        <div className='home-bg min-h-screen lg:max-w-[70%] lg:mx-auto lg:border lg:border-[#d1d5db]'>
             {/* Navigation Bar */}
             <NavigationBar />
 

@@ -26,9 +26,9 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
 
     return (
         <section
-            className='fixed inset-0 h-dvh w-full lg:w-[60%] bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-50'
+            className='fixed inset-0 h-dvh w-full  bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-50'
             onClick={handleBackdropClick}>
-            <div className='home-bg grid grid-cols-1 px-6 py-6 gap-4 w-[85%] rounded-lg'>
+            <div className='home-bg grid grid-cols-1 px-6 py-6 gap-4 w-[85%] lg:w-[30%] rounded-lg'>
                 <div className='text-lg font-bold flex flex-row gap-2'>
                     {getThemeBasedIcon()} 
                     <p className='todayhome-text text-xl self-center'>{user?.username}</p>
@@ -50,10 +50,10 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                     {/* SWITCH FOR CHANGING THEME */}
                     <button
                         onClick={toggleTheme}
-                        className='relative flex items-center h-full w-[25%] rounded-full settings-switch-bg p-2 transition-colors'>
+                        className='relative flex items-center h-full w-[25%] rounded-full settings-switch-bg p-2 lg:p-4 transition-colors'>
                         <span
                             className={`absolute h-[75%] w-[30%] rounded-full home-bg transition-transform ${
-                                theme === 'lavender' ? 'translate-x-8' : 'translate-x-0'
+                                theme === 'lavender' ? 'translate-x-8' : 'translate-x-0 lg:-translate-x-2'
                             }`}
                         />
                     </button>

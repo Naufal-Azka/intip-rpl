@@ -108,7 +108,7 @@ export default function Jadwal() {
         });
     });
     return (
-        <div className='schedulesection-text'>
+        <div className='schedulesection-text lg:w-[70%] lg:mx-auto lg:border lg:border-[#d1d5db]'>
             <nav>
                 <Link href='/' className='flex place-items-center gap-0.5 p-4 border-b-1 border-b-[#C1C1C1] home-bg'>
                     <svg
@@ -123,13 +123,13 @@ export default function Jadwal() {
                 </Link>
             </nav>
             <section className='home-bg p-[5%]'>
-                <div className='grid grid-cols-2 gap-[11px] schedule-bg border-1 rounded-[10px] place-items-center p-[5%]'>
-                    <div className='max-w-[150px]'>
-                        <p className='text-[16px] font-medium mb-2.5'>Hari</p>
+                <div className='grid grid-cols-2 gap-[11px] lg:gap-5 schedule-bg border-1 rounded-[10px] place-items-center p-[5%] lg:p-[3%]'>
+                    <div className='w-[150px] lg:w-full'>
+                        <p className='lg:text-xl font-medium mb-2.5 lg:mb-1'>Hari</p>
                         <select
                             value={hari}
                             onChange={(e) => setHari(e.target.value)}
-                            className='w-37.5 h-7.5 font-medium rounded-[5px] border-none schedule-item-bg schedule-text pl-1.5'>
+                            className='w-37.5 h-7.5 lg:w-full lg:text-lg font-medium rounded-[5px] border-none schedule-item-bg schedule-text pl-1.5'>
                             <option value='Senin'>Senin</option>
                             <option value='Selasa'>Selasa</option>
                             <option value='Rabu'>Rabu</option>
@@ -137,24 +137,24 @@ export default function Jadwal() {
                             <option value='Jumat'>Jum'at</option>
                         </select>
                     </div>
-                    <div className='max-w-[150px]'>
-                        <p className='text-[16px] font-medium mb-2.5 '>Lab</p>
+                    <div className='w-[150px] lg:w-full'>
+                        <p className='lg:text-xl font-medium mb-2.5 lg:mb-1'>Lab</p>
                         <select
                             value={lab}
                             onChange={(e) => setLab(e.target.value)}
-                            className='w-37.5 h-7.5 font-medium rounded-[5px] border-none schedule-item-bg schedule-text pl-1.5'>
+                            className='w-37.5 h-7.5 lg:w-full lg:text-lg font-medium rounded-[5px] border-none schedule-item-bg schedule-text pl-1.5'>
                             <option value='semua'>Semua</option>
                             <option value='RPL_1'>Lab 1</option>
                             <option value='RPL_2'>Lab 2</option>
                             <option value='RPL_3'>Lab 3</option>
                         </select>
                     </div>
-                    <div className='max-w-[150px]'>
-                        <p className='text-[16px] font-medium mb-2.5 '>Kelas</p>
+                    <div className='w-[150px] lg:w-full'>
+                        <p className='lg:text-xl font-medium mb-2.5 lg:mb-1'>Kelas</p>
                         <select
                             value={kelas}
                             onChange={(e) => setKelas(e.target.value)}
-                            className='w-37.5 h-7.5 font-medium rounded-[5px] border-none schedule-item-bg schedule-text pl-1.5'>
+                            className='w-37.5 h-7.5 lg:w-full lg:text-lg font-medium rounded-[5px] border-none schedule-item-bg schedule-text pl-1.5'>
                             <option value='semua'>Semua</option>
                             <option value='X_PPLG_1'>X PPLG 2</option>
                             <option value='X_PPLG_2'>X PPLG 1</option>
@@ -169,7 +169,8 @@ export default function Jadwal() {
                     </div>
                 </div>
             </section>
-            <section className='pb-[20%] pt-[5%] px-[5%] grid grid-cols-1 gap-[2%] home-bg'>
+
+            <section className='pb-[20%] pt-[5%] lg:pt-0 px-[5%] grid grid-cols-1 gap-[2%] home-bg'>
                 {Object.entries(jadwalByLab)
                     .sort(([labA], [labB]) => {
                         const numA = parseInt(labA.split('_')[1]);
@@ -180,10 +181,10 @@ export default function Jadwal() {
                         <div
                             key={lab}
                             className='schedule-bg border-1 schedule-border rounded-[10px] justify-center gap-[5%]'>
-                            <div className='p-2.5 justify-items-center border-b-1 schedule-border'>
-                                <p>Lab {lab.split('_')[1]}</p>
+                            <div className='p-2.5 lg:p-4 justify-items-center border-b-1 schedule-border'>
+                                <p className='lg:text-xl lg:font-semibold'>Lab RPL {lab.split('_')[1]}</p>
                             </div>
-                            <div className='schedule-item-bg mx-[6%] border-1 schedule-item-border rounded-[10px] my-[5%]'>
+                            <div className='schedule-item-bg mx-[6%] my-[5%] lg:mx-[3%] lg:my-[4%] border-1 schedule-item-border rounded-[10px]'>
                                 {schedules.map((schedule) => (
                                     <div key={schedule.id} className='border-1 schedule-item-border'>
                                         <div className='text-[16px] font-medium flex justify-between py-[5px] px-[10px]'>

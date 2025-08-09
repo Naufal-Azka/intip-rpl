@@ -43,7 +43,7 @@ export default function Login() {
     };
 
     return (
-        <div className='lg:max-w-[80%] lg:mx-auto lg:border lg:border-[#d1d5db] grid grid-cols-1 justify-items-center min-w-full mt-10'>
+        <div className='lg:w-[50%] lg:min-w-0 lg:min-h-dvh lg:mx-auto lg:border lg:border-[#d1d5db] lg:py-15 grid grid-cols-1 justify-items-center min-w-full mt-10 lg:mt-0'>
             <Image src='/intiprpl-logo.png' alt='Intip-RPL-Logo' width={200} height={200} />
             <h1 className='text-3xl my-6'>Log In</h1>
             <form onSubmit={handleSubmit} className='grid grid-cols-1 min-w-full px-6'>
