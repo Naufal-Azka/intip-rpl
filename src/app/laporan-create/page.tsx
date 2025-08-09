@@ -266,7 +266,7 @@ export default function LaporanCreate() {
     }
 
     return (
-        <div>
+        <div className='lg:w-[70%] lg:mx-auto lg:border lg:border-[#d1d5db]'>
             <nav>
                 <Link href='/' className='flex place-items-center gap-0.5 p-4 border-b-1 home-bg border-primary'>
                     <svg
@@ -304,7 +304,7 @@ export default function LaporanCreate() {
                             <div
                                 key={`A${num}`}
                                 onClick={(e) => handleSeatClick(`A${num}`, e)}
-                                className='w-11 h-11 rounded cursor-pointer flex items-center justify-center text-white'
+                                className='w-11 h-11 lg:w-15 lg:h-15 rounded cursor-pointer flex items-center justify-center text-white'
                                 style={{
                                     backgroundColor:
                                         formData.damages.find((d) => d.id === `A${num}`)?.damageType ||
@@ -321,7 +321,7 @@ export default function LaporanCreate() {
                                     <div
                                         key={`${row}${num}`}
                                         onClick={(e) => handleSeatClick(`${row}${num}`, e)}
-                                        className='w-11 h-11 rounded cursor-pointer flex items-center justify-center text-white'
+                                        className='w-11 h-11 lg:w-15 lg:h-15 rounded cursor-pointer flex items-center justify-center text-white'
                                         style={{
                                             backgroundColor:
                                                 formData.damages.find((d) => d.id === `${row}${num}`)?.damageType ||
@@ -338,7 +338,7 @@ export default function LaporanCreate() {
                             <div
                                 key={`D${num}`}
                                 onClick={(e) => handleSeatClick(`D${num}`, e)}
-                                className='w-11 h-11 rounded cursor-pointer flex items-center justify-center text-white'
+                                className='w-11 h-11 lg:w-15 lg:h-15 rounded cursor-pointer flex items-center justify-center text-white'
                                 style={{
                                     backgroundColor:
                                         formData.damages.find((d) => d.id === `D${num}`)?.damageType ||
@@ -351,7 +351,7 @@ export default function LaporanCreate() {
                 {/* Teacher's seat */}
                 <div
                     onClick={(e) => handleSeatClick('teacher', e)}
-                    className='w-25 h-12 mt-[10%] rounded cursor-pointer place-self-end flex items-center justify-center text-white'
+                    className='w-25 h-12 lg:w-32 lg:h-16 mt-[10%] rounded cursor-pointer place-self-end flex items-center justify-center text-white'
                     style={{
                         backgroundColor:
                             formData.damages.find((d) => d.id === 'Guru')?.damageType || DAMAGE_TYPES.NONE,
@@ -361,7 +361,7 @@ export default function LaporanCreate() {
             </section>
 
             <section className='px-[5%] pt-[5%] grid grid-cols-1 home-bg schedulesection-text'>
-                <p className='italic'>Keterangan</p>
+                <p className='italic lg:text-lg'>Keterangan</p>
                 <div className='flex flex-row gap-1.5 place-items-center'>
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
@@ -369,10 +369,10 @@ export default function LaporanCreate() {
                         height='24'
                         viewBox='0 0 24 24'
                         style={{ fill: '#ff0000' }}
-                        className='min-w-6 min-h-6'>
+                        className='min-w-6 min-h-6 lg:min-w-8 lg:min-h-8'>
                         <path d='M17 2H7C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5z'></path>
                     </svg>
-                    <p className='italic text-xs'>Jika Terdapat Kerusakan (Monitor & PC)</p>
+                    <p className='italic text-xs lg:text-sm'>Jika Terdapat Kerusakan (Monitor & PC)</p>
                 </div>
                 <div className='flex flex-row gap-1.5 place-items-center'>
                     <svg
@@ -381,10 +381,10 @@ export default function LaporanCreate() {
                         height='24'
                         viewBox='0 0 24 24'
                         style={{ fill: '#ffa500' }}
-                        className='min-w-6 min-h-6'>
+                        className='min-w-6 min-h-6 lg:min-w-8 lg:min-h-8'>
                         <path d='M17 2H7C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5z'></path>
                     </svg>
-                    <p className='italic text-xs'>
+                    <p className='italic text-xs lg:text-sm'>
                         Jika Terdapat Kerusakan Pada Aksesoris (Keyboard, Mouse, Kursi, & Meja)
                     </p>
                 </div>
@@ -395,10 +395,10 @@ export default function LaporanCreate() {
                         height='24'
                         viewBox='0 0 24 24'
                         style={{ fill: '#ffd700' }}
-                        className='min-w-6 min-h-6'>
+                        className='min-w-6 min-h-6 lg:min-w-8 lg:min-h-8'>
                         <path d='M17 2H7C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5z'></path>
                     </svg>
-                    <p className='italic text-xs'>Jika Ada Ketidaklengkapan Barang</p>
+                    <p className='italic text-xs lg:text-sm'>Jika Ada Ketidaklengkapan Barang</p>
                 </div>
                 <div className='flex flex-row gap-1.5 place-items-center'>
                     <svg
@@ -407,10 +407,10 @@ export default function LaporanCreate() {
                         height='24'
                         viewBox='0 0 24 24'
                         style={{ fill: '#007bff' }}
-                        className='min-w-6 min-h-6'>
+                        className='min-w-6 min-h-6 lg:min-w-8 lg:min-h-8'>
                         <path d='M17 2H7C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5z'></path>
                     </svg>
-                    <p className='italic text-xs'>Jika Terjadi Masalah Pada Ethernet</p>
+                    <p className='italic text-xs lg:text-sm'>Jika Terjadi Masalah Pada Ethernet</p>
                 </div>
                 <div className='flex flex-row gap-1.5 place-items-center'>
                     <svg
@@ -419,14 +419,14 @@ export default function LaporanCreate() {
                         height='24'
                         viewBox='0 0 24 24'
                         style={{ fill: '#787878' }}
-                        className='min-w-6 min-h-6'>
+                        className='min-w-6 min-h-6 lg:min-w-8 lg:min-h-8'>
                         <path d='M17 2H7C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5z'></path>
                     </svg>
-                    <p className='italic text-xs'>Tidak Adanya Monitor & PC</p>
+                    <p className='italic text-xs lg:text-sm'>Tidak Adanya Monitor & PC</p>
                 </div>
             </section>
 
-            <section className='px-[5%] pt-[5%] pb-[10%] grid grid-cols-1 gap-6 home-bg'>
+            <section className='px-[5%] pt-[5%] lg:pt-[3%] pb-[10%] grid grid-cols-1 gap-6 home-bg'>
                 <div className='grid grid-cols-1'>
                     <label htmlFor='' className='text-[28px] input-text'>
                         Detail Kerusakan
@@ -454,7 +454,7 @@ export default function LaporanCreate() {
                         Foto Ruangan
                         <span className='text-red-500'>*</span>
                     </label>
-                    <div className='inline-block relative w-full h-[calc(16vh*16/9)] bg-gray-400 rounded-xl'>
+                    <div className='inline-block relative w-full h-[calc(16vh*16/9)] lg:h-[calc(24vh*16/9)] bg-gray-400 rounded-xl'>
                         <input
                             type='file'
                             name='foto_ruangan'
@@ -483,7 +483,7 @@ export default function LaporanCreate() {
                         Foto Kerusakan (Bila Ada)
                         <span className='text-red-500'>*</span>
                     </label>
-                    <div className='inline-block relative w-full h-[calc(16vh*16/9)] bg-gray-400 rounded-xl'>
+                    <div className='inline-block relative w-full h-[calc(16vh*16/9)] lg:h-[calc(24vh*16/9)] bg-gray-400 rounded-xl'>
                         <input
                             type='file'
                             name='foto_kerusakan'
