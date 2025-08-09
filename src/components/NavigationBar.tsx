@@ -3,7 +3,7 @@
 import { useAuth } from '@/lib/AuthContext';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SettingsModal from './shared/SettingsModal';
 import { useTheme } from '@/lib/ThemeContext';
 
@@ -13,6 +13,7 @@ export default function NavigationBar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Add this state
+    const navRef = useRef<HTMLDivElement>(null);
 
     // Add console log to debug
     useEffect(() => {
@@ -54,8 +55,38 @@ export default function NavigationBar() {
         );
     };
 
+    // Prevent body scroll when nav is open
+    useEffect(() => {
+        if (isNavOpen) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+        return () => {
+            document.body.classList.remove('overflow-hidden');
+        };
+    }, [isNavOpen]);
+
+    // Close nav when clicking outside
+    useEffect(() => {
+        if (!isNavOpen) return;
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                navRef.current &&
+                !navRef.current.contains(event.target as Node)
+            ) {
+                setIsNavOpen(false);
+                setIsMenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isNavOpen]);
+
     return (
-        <div className='grid grid-cols-1 place-items-center min-w-full'>
+        <div ref={navRef} className='grid grid-cols-1 place-items-center min-w-full'>
             <div className='home-bg grid grid-cols-4 min-w-full p-2 border-b-2 border-primary'>
                 <Link href='/' className='col-span-1'>
                     {getThemeBasedLogo()}
@@ -89,11 +120,16 @@ export default function NavigationBar() {
                 )}
             </div>
 
-            {/* Navigation Items with Slide Down Animation */}
+            {/* Navigation Items with Slide Down/Up Animation */}
             <div
-                className={`fixed top-[53px] left-0 right-0 z-1 home-bg transition-all duration-300 ease-in-out overflow-hidden ${
-                    isNavOpen ? 'max-h-screen visible' : 'max-h-0 opacity-0 invisible'
-                }`}>
+                className={`fixed top-[53px] left-0 right-0 z-1 home-bg transition-all duration-300 ease-in-out overflow-hidden
+                    ${isNavOpen
+                        ? 'max-h-screen opacity-100 visible translate-y-0'
+                        : 'max-h-0 opacity-0 invisible -translate-y-full'
+                    }
+                `}
+                style={{ transitionProperty: 'max-height, opacity, transform' }}
+            >
                 <div className='w-full home-bg username-navbar-text lg:max-w-[80%] lg:mx-auto'>
                     {isNavOpen && (
                         <>
