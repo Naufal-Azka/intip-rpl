@@ -37,7 +37,7 @@ function groupDamagesByType(damages: any[]) {
 export async function POST(request: Request) {
     try {
         // Ensure uploads directory exists
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        const uploadDir = path.join(process.cwd(), 'laporan');
         try {
             await fs.access(uploadDir);
         } catch {
@@ -128,7 +128,7 @@ async function saveFile(file: File, prefix: string): Promise<string> {
     const buffer = Buffer.from(bytes);
 
     const filename = `${prefix}-${Date.now()}${path.extname(file.name)}`;
-    const filepath = path.join(process.cwd(), 'public', 'uploads', filename);
+    const filepath = path.join(process.cwd(), 'laporan', filename);
 
     await writeFile(filepath, buffer);
     return `/uploads/${filename}`;
