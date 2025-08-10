@@ -7,6 +7,13 @@ import fs from 'fs/promises';
 
 const prisma = new PrismaClient();
 
+// Inisialisasi Cloudinary dengan env
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 const DAMAGE_TYPES = {
     '#ff0000': 'MONITOR_PC',
     '#ffa500': 'ACCESSORIES',
@@ -14,12 +21,6 @@ const DAMAGE_TYPES = {
     '#007bff': 'ETHERNET',
     '#787878': 'NO_PC',
 };
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 function groupDamagesByType(damages: any[]) {
     const grouped: { [key: string]: string[] } = {};
@@ -130,14 +131,19 @@ export async function POST(request: Request) {
     }
 }
 
+// Ganti fungsi saveFile agar upload ke Cloudinary
 async function saveFile(file: File, prefix: string): Promise<string> {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload ke Cloudinary using a Promise
-    const secureUrl: string = await new Promise((resolve, reject) => {
+    // Upload ke Cloudinary
+    return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-            { folder: 'laporan', public_id: `${prefix}-${Date.now()}` },
+            {
+                folder: 'laporan',
+                public_id: `${prefix}-${Date.now()}`,
+                resource_type: 'auto',
+            },
             (error, result) => {
                 if (error) return reject(error);
                 resolve(result?.secure_url || '');
@@ -145,8 +151,6 @@ async function saveFile(file: File, prefix: string): Promise<string> {
         );
         uploadStream.end(buffer);
     });
-
-    return secureUrl;
 }
 
 export async function GET(request: NextRequest) {
