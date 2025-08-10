@@ -91,8 +91,7 @@ export default function LaporanCreationSection({ user, jadwal, getJadwalStatus }
                 const status = getJadwalStatus(schedule.waktuMulai, schedule.waktuSelesai);
                 const canCreateReport =
                     user.association_kelas === schedule.kelas &&
-                    (status === 'current' || (status === 'finished' && isWithinGracePeriod(schedule.waktuSelesai))) &&
-                    !schedule.hasLaporan; // Add this condition
+                    (status === 'current' || (status === 'finished' && isWithinGracePeriod(schedule.waktuSelesai))) // && !schedule.hasLaporan; 
 
                 // DEBUGGING ONLY CONSOLE LOG
                 // console.log('Debug - Schedule:', {
