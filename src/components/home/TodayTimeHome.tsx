@@ -21,7 +21,7 @@ export default function TodayTimeHome() {
 	const seconds = rawSeconds < 10 ? `0${rawSeconds}` : `${rawSeconds}`;
 
 	return (
-		<section className='font-semibold text-xl lg:text-2xl justify-self-end content-center bg-[#e4e4e4] px-3 py-1 tracking-wide rounded-lg text-center '>
+		<section className='font-semibold text-black text-xl lg:text-2xl justify-self-end content-center bg-[#e4e4e4] px-3 py-1 tracking-wide rounded-lg text-center '>
 			{hours}:{minutes}:{seconds}
 		</section>
 	);

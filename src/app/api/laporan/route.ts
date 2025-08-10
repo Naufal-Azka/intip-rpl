@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { writeFile, mkdir } from 'fs/promises';
+import { v2 as cloudinary } from 'cloudinary';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -13,6 +14,12 @@ const DAMAGE_TYPES = {
     '#007bff': 'ETHERNET',
     '#787878': 'NO_PC',
 };
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 function groupDamagesByType(damages: any[]) {
     const grouped: { [key: string]: string[] } = {};
@@ -127,11 +134,19 @@ async function saveFile(file: File, prefix: string): Promise<string> {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const filename = `${prefix}-${Date.now()}${path.extname(file.name)}`;
-    const filepath = path.join(process.cwd(), 'laporan', filename);
+    // Upload ke Cloudinary using a Promise
+    const secureUrl: string = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'laporan', public_id: `${prefix}-${Date.now()}` },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result?.secure_url || '');
+            }
+        );
+        uploadStream.end(buffer);
+    });
 
-    await writeFile(filepath, buffer);
-    return `/uploads/${filename}`;
+    return secureUrl;
 }
 
 export async function GET(request: NextRequest) {
