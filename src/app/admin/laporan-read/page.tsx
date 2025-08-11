@@ -263,6 +263,7 @@ function LaporanReadContent() {
 										layout='fill'
 										objectFit='cover'
 										className='rounded'
+										unoptimized
 									/>
 								</div>
 								{laporan.foto_kerusakan && (
@@ -279,6 +280,7 @@ function LaporanReadContent() {
 											layout='fill'
 											objectFit='cover'
 											className='rounded'
+											unoptimized
 										/>
 									</div>
 								)}
@@ -300,6 +302,7 @@ function LaporanReadContent() {
 							layout='fill'
 							objectFit='contain'
 							className='rounded'
+							unoptimized
 						/>
 						<button
 							className='absolute top-4 right-4 bg-white rounded-full p-2'

@@ -2,16 +2,13 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { writeFile, mkdir } from 'fs/promises';
 import { v2 as cloudinary } from 'cloudinary';
-import path from 'path';
-import fs from 'fs/promises';
 
 const prisma = new PrismaClient();
 
 // Inisialisasi Cloudinary dengan env
 cloudinary.config({
-    cloud_url: process.env.CLOUDINARY_URL || 'CLOUDINARY_URL=cloudinary://758862139316742:XRQk7Flp1SZiHzaWv07Fr6oSbWc@dflobvq8c',
+    cloud_url: process.env.cloudinary_url || 'cloudinary://758862139316742:XRQk7Flp1SZiHzaWv07Fr6oSbWc@dflobvq8c',
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dflobvq8c',
     api_key: process.env.CLOUDINARY_API_KEY || '758862139316742',
     api_secret: process.env.CLOUDINARY_API_SECRET || 'XRQk7Flp1SZiHzaWv07Fr6oSbWcy',
@@ -48,6 +45,24 @@ function groupDamagesByType(damages: any[]) {
 // Optimized version dengan error handling yang lebih baik
 export async function POST(request: Request) {
     try {
+        console.log('=== Cloudinary Configuration Check ===');
+        console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME || 'NOT SET');
+        console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY || 'NOT SET');
+        console.log('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET ? 'SET' : 'NOT SET');
+        console.log('CLOUDINARY_URL:', process.env.CLOUDINARY_URL ? 'SET' : 'NOT SET');
+
+        // Test Cloudinary connection
+        try {
+            const testResult = await cloudinary.api.ping();
+            console.log('Cloudinary connection test:', testResult);
+        } catch (cloudinaryError) {
+            console.error('Cloudinary connection failed:', cloudinaryError);
+            return NextResponse.json({ 
+                error: 'Cloudinary configuration error',
+                details: cloudinaryError instanceof Error ? cloudinaryError.message : 'Unknown'
+            }, { status: 500 });
+        }
+
         const formData = await request.formData();
 
         // Validate required fields
