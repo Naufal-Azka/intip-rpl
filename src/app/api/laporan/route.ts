@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 // Inisialisasi Cloudinary dengan env
 cloudinary.config({
-    cloud_url: process.env.cloudinary_url || 'cloudinary://758862139316742:XRQk7Flp1SZiHzaWv07Fr6oSbWc@dflobvq8c',
+    cloud_url: process.env.CLOUDINARY_URL || 'cloudinary://758862139316742:XRQk7Flp1SZiHzaWv07Fr6oSbWc@dflobvq8c',
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dflobvq8c',
     api_key: process.env.CLOUDINARY_API_KEY || '758862139316742',
     api_secret: process.env.CLOUDINARY_API_SECRET || 'XRQk7Flp1SZiHzaWv07Fr6oSbWcy',
