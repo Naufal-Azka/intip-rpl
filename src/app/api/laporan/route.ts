@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dflobvq8c',
     api_key: process.env.CLOUDINARY_API_KEY || '758862139316742',
-    api_secret: process.env.CLOUDINARY_API_SECRET || 'XRQk7Flp1SZiHzaWv07Fr6oSbWc',
+    api_secret: process.env.CLOUDINARY_API_SECRET || 'XRQk7Flp1SZiHzaWv07Fr6oSbWcy',
 });
 
 const DAMAGE_TYPES = {
