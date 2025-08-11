@@ -1,3 +1,4 @@
+export const runtime = "node";
 'use server'
 
 import { NextRequest, NextResponse } from 'next/server';
