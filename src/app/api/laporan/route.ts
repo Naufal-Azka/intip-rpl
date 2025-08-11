@@ -219,6 +219,7 @@ export async function GET(request: NextRequest) {
                 now.setHours(23, 59, 59, 999);
                 break;
             default: // today
+                startDate.setDate(now.getDate());
                 startDate.setHours(0, 0, 0, 0);
                 now.setHours(23, 59, 59, 999);
         }
