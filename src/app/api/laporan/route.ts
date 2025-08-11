@@ -11,9 +11,9 @@ const prisma = new PrismaClient();
 
 // Inisialisasi Cloudinary dengan env
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dflobvq8c',
+    api_key: process.env.CLOUDINARY_API_KEY || '758862139316742',
+    api_secret: process.env.CLOUDINARY_API_SECRET || 'XRQk7Flp1SZiHzaWv07Fr6oSbWc',
 });
 
 const DAMAGE_TYPES = {
