@@ -191,11 +191,10 @@ export async function GET(request: NextRequest) {
     const startDate = new Date();
 
     // Adjust timezone offset to WIB (UTC+7)
-    const wibOffset = 0 * 60 * 60 * 1000; // 7 hours in milliseconds
-    now.setTime(now.getTime() + wibOffset);
-    startDate.setTime(startDate.getTime() + wibOffset);
+    // const wibOffset = 0 * 60 * 60 * 1000; // 7 hours in milliseconds
+    // now.setTime(now.getTime() + wibOffset);
+    // startDate.setTime(startDate.getTime() + wibOffset);
 
-    console.log("TANGGAL: " + startDate)
 
     let whereClause = {};
 
@@ -209,25 +208,21 @@ export async function GET(request: NextRequest) {
                 startDate.setHours(0, 0, 0, 0);
                 now.setDate(now.getDate() - 1);
                 now.setHours(23, 59, 59, 999);
-                console.log("TANGGAL: " + startDate)
                 break;
             case '7days':
                 startDate.setDate(now.getDate() - 7);
                 startDate.setHours(0, 0, 0, 0);
                 now.setHours(23, 59, 59, 999);
-                console.log("TANGGAL: " + startDate)
                 break;
             case '30days':
                 startDate.setDate(now.getDate() - 30);
                 startDate.setHours(0, 0, 0, 0);
                 now.setHours(23, 59, 59, 999);
-                console.log("TANGGAL: " + startDate)
                 break;
             default: // today
                 startDate.setDate(now.getDate());
                 startDate.setHours(0, 0, 0, 0);
                 now.setHours(23, 59, 59, 999);
-                console.log("TANGGAL: " + startDate)
         }
         whereClause = {
             tanggal_laporan: {
