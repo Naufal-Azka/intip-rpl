@@ -1,0 +1,9 @@
+{
+  "build": {
+    "env": {
+      "CLOUDINARY_CLOUD_NAME": "dflobvq8c",
+      "CLOUDINARY_API_KEY": "758862139316742",
+      "CLOUDINARY_API_SECRET": "XRQk7Flp1SZiHzaWv07Fr6oSbWc"
+    }
+  }
+}
