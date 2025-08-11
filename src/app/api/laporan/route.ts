@@ -45,16 +45,9 @@ function groupDamagesByType(damages: any[]) {
         .slice(0, 5); // Take only first 5 damage groups
 }
 
+// Optimized version dengan error handling yang lebih baik
 export async function POST(request: Request) {
     try {
-        // Ensure uploads directory exists
-        const uploadDir = path.join(process.cwd(), 'laporan');
-        try {
-            await fs.access(uploadDir);
-        } catch {
-            await mkdir(uploadDir, { recursive: true });
-        }
-
         const formData = await request.formData();
 
         // Validate required fields
@@ -68,23 +61,31 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Description is required' }, { status: 400 });
         }
 
-        const damages = JSON.parse(formData.get('damages') as string);
-        const groupedDamages = groupDamagesByType(damages);
-        const tanggal_laporan = new Date(formData.get('tanggal_laporan') as string);
-
-        // Handle file uploads
         const foto_ruangan = formData.get('foto_ruangan') as File;
         if (!foto_ruangan) {
             return NextResponse.json({ error: 'Room photo is required' }, { status: 400 });
         }
 
         const foto_kerusakan = formData.get('foto_kerusakan') as File;
+        const damages = JSON.parse(formData.get('damages') as string);
+        const groupedDamages = groupDamagesByType(damages);
+        const tanggal_laporan = new Date(formData.get('tanggal_laporan') as string);
 
-        // Save files
-        const foto_ruangan_path = await saveFile(foto_ruangan, 'ruangan');
-        const foto_kerusakan_path = foto_kerusakan ? await saveFile(foto_kerusakan, 'kerusakan') : '';
+        // Upload files to Cloudinary with parallel execution
+        const uploadPromises = [
+            saveFile(foto_ruangan, 'ruangan')
+        ];
 
-        // Get primary and related jadwal IDs with null check
+        if (foto_kerusakan) {
+            uploadPromises.push(saveFile(foto_kerusakan, 'kerusakan'));
+        }
+
+        // Wait for all uploads to complete
+        const uploadResults = await Promise.all(uploadPromises);
+        const foto_ruangan_path = uploadResults[0];
+        const foto_kerusakan_path = uploadResults[1] || '';
+
+        // Handle related IDs
         const related_ids_str = formData.get('related_ids');
         const related_ids = related_ids_str
             ? related_ids_str
@@ -124,16 +125,27 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, data: laporan });
     } catch (error) {
         console.error('Error creating laporan:', error);
+        
+        // Better error handling
+        if (error instanceof Error) {
+            if (error.message.includes('Cloudinary')) {
+                return NextResponse.json(
+                    { success: false, error: 'Failed to upload images' },
+                    { status: 500 }
+                );
+            }
+            return NextResponse.json(
+                { success: false, error: error.message },
+                { status: 500 }
+            );
+        }
+        
         return NextResponse.json(
-            {
-                success: false,
-                error: error instanceof Error ? error.message : 'Failed to create laporan',
-            },
+            { success: false, error: 'Failed to create laporan' },
             { status: 500 }
         );
     }
 }
-
 // Ganti fungsi saveFile agar upload ke Cloudinary
 async function saveFile(file: File, prefix: string): Promise<string> {
     const bytes = await file.arrayBuffer();
